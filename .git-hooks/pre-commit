@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo "Running ESLint..."
+npm run eslint -- --fix
+if [ $? -ne 0 ]; then
+    echo "ESLint failed. Please fix the issues."
+    exit 1
+fi
+
+echo "Running Prettier..."
+npm run prettier -- --write
+if [ $? -ne 0 ]; then
+    echo "Prettier failed. Please fix the issues."
+    exit 1
+fi
+
+echo "Linting and formatting completed successfully."
