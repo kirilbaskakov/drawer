@@ -1,14 +1,14 @@
 #!/bin/bash
 
 echo "Running ESLint..."
-npm run eslint -- --fix
+npm run lint:fix
 if [ $? -ne 0 ]; then
     echo "ESLint failed. Please fix the issues."
     exit 1
 fi
 
 echo "Running Prettier..."
-npm run prettier -- --write
+npm run prettier:fix 
 if [ $? -ne 0 ]; then
     echo "Prettier failed. Please fix the issues."
     exit 1
