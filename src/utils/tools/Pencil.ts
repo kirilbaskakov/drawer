@@ -28,10 +28,7 @@ class Pencil implements Tool {
       return;
     }
     this.isDrawing = true;
-    this.currentFigure = new Figure(
-      this.canvasContext.context,
-      this.canvasContext.offset,
-    );
+    this.currentFigure = new Figure();
     this.canvasContext.addFigure(this.currentFigure);
     this.currentFigure.beginLine(e.pageX, e.pageY);
   }

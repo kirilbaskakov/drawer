@@ -1,44 +1,39 @@
-import FigureInstruction from "../types/FigureInstruction";
+import { CanvasStyles } from "../types/CanvasStyles";
 import Rect from "../types/Rect";
 import Segment from "../types/Segment";
+import { canvasContext } from "./CanvasContext";
 import segmentIntersectRect from "./geometry/segmentIntersectRect";
 
 class Figure {
   id: number;
-  instructions: Array<[any, any]> = [];
   boundingRect: Rect = { x1: 9999, y1: 9999, x2: -9999, y2: -9999 };
+  styles: CanvasStyles
 
-  private context: CanvasRenderingContext2D;
+  private instructions: Array<[any, any]> = [];
   private segments: Segment[] = [];
   private segStart: [number, number] = [0, 0];
-  private offset: [number, number] = [0, 0];
 
-  constructor(
-    context: CanvasRenderingContext2D,
-    offset: [number, number] = [0, 0],
-  ) {
+  constructor() {
     this.id = +new Date();
-    this.context = context;
-    this.offset = offset;
+    this.styles = {...canvasContext.styles};
+    this.applyStyles();
   }
 
   beginLine(x: number, y: number) {
-    x -= this.offset[0];
-    y -= this.offset[1];
-    this.context.beginPath();
+    [x, y] = this.translatePoint(x, y);
+    canvasContext.context?.beginPath();
     this.instructions.push(["beginPath", []]);
-    this.context.moveTo(x, y);
+    canvasContext.context?.moveTo(x, y);
     this.instructions.push(["moveTo", [x, y]]);
     this.segStart = [x, y];
     this.updateBoundingRect(x, y);
   }
 
   drawLine(x: number, y: number) {
-    x -= this.offset[0];
-    y -= this.offset[1];
-    this.context.lineTo(x, y);
+    [x, y] = this.translatePoint(x, y);
+    canvasContext.context?.lineTo(x, y);
     this.instructions.push(["lineTo", [x, y]]);
-    this.context.stroke();
+    canvasContext.context?.stroke();
     this.instructions.push(["stroke", []]);
     this.segments.push({
       x1: this.segStart[0],
@@ -69,7 +64,7 @@ class Figure {
   clearBoundingRect() {
     const w = this.boundingRect.x2 - this.boundingRect.x1;
     const h = this.boundingRect.y2 - this.boundingRect.y1;
-    this.context.clearRect(
+    canvasContext.context?.clearRect(
       this.boundingRect.x1 - 5,
       this.boundingRect.y1 - 5,
       w + 10,
@@ -85,8 +80,9 @@ class Figure {
   }
 
   repaint() {
+    this.applyStyles();
     this.instructions.forEach((instruction) => {
-      this.context[instruction[0]](...instruction[1]);
+      canvasContext.context?.[instruction[0]](...instruction[1]);
     });
   }
 
@@ -96,6 +92,23 @@ class Figure {
     this.boundingRect.y1 = Math.min(this.boundingRect.y1, y);
     this.boundingRect.y2 = Math.max(this.boundingRect.y2, y);
   }
-}
 
+  private applyStyles() {
+    if (!canvasContext.context) {
+        return;
+    }
+    canvasContext.context.strokeStyle = this.styles.strokeStyle;
+    canvasContext.context.lineWidth = this.styles.lineWidth;
+    console.log(this.styles.lineDash);
+    canvasContext.context.setLineDash(this.styles.lineDash);
+  }
+
+  private translatePoint(x: number, y: number) {
+    x /= canvasContext.scaleFactor;
+    y /= canvasContext.scaleFactor;
+    x -= canvasContext.offset[0];
+    y -= canvasContext.offset[1];
+    return [x, y];
+  }
+}
 export default Figure;

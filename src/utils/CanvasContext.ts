@@ -1,3 +1,5 @@
+import { DEFAULT_STYLES } from "../constants/drawingDefaults";
+import { CanvasStyles } from "../types/CanvasStyles";
 import Rect from "../types/Rect";
 import Figure from "./Figure";
 import Tool from "./Tool";
@@ -7,6 +9,8 @@ class CanvasContext extends EventTarget {
   activeTool: Tool | null = null;
   figures: Figure[] = [];
   offset: [number, number] = [0, 0];
+  styles: CanvasStyles = DEFAULT_STYLES;
+  scaleFactor = 1;
 
   connectCanvas(canvas: HTMLCanvasElement) {
     this.context = canvas.getContext("2d");
@@ -27,9 +31,22 @@ class CanvasContext extends EventTarget {
     };
   }
 
+  zoom(zoom: number) {
+    if (!this.context) return;
+    this.context.scale(zoom / this.scaleFactor, zoom / this.scaleFactor);
+    this.offset[0] *= zoom / this.scaleFactor;
+    this.offset[1] *= zoom / this.scaleFactor;
+    this.scaleFactor = zoom;
+    this.repaint();
+  }
+
+
+  setStyles(styles: Partial<CanvasStyles>) {
+    this.styles = {...this.styles, ...styles}
+  }
+
   setActiveTool(tool: Tool) {
     this.activeTool = tool;
-    console.log(this.activeTool === tool);
   }
 
   addFigure(figure: Figure) {
@@ -50,10 +67,10 @@ class CanvasContext extends EventTarget {
     this.repaint();
   }
 
-  translate(dx: number, dy: number) {
-    this.context?.translate(dx, dy);
-    this.offset[0] += dx;
-    this.offset[1] += dy;
+  translate(clientDx: number, clientDy: number) {
+    this.context?.translate(clientDx, clientDy);
+    this.offset[0] += clientDx / this.scaleFactor;
+    this.offset[1] += clientDy / this.scaleFactor;
     this.repaint();
   }
 
@@ -68,3 +85,4 @@ class CanvasContext extends EventTarget {
 export const canvasContext = new CanvasContext();
 
 export default CanvasContext;
+

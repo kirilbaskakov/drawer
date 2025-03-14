@@ -35,10 +35,7 @@ class LineDrawer implements Tool {
       return;
     }
     this.lineStart = [e.pageX, e.pageY];
-    this.currentFigure = new Figure(
-      this.canvasContext.context,
-      this.canvasContext.offset,
-    );
+    this.currentFigure = new Figure();
     this.canvasContext.addFigure(this.currentFigure);
     this.currentFigure.beginLine(e.pageX, e.pageY);
     this.currentFigure.drawLine(e.pageX, e.pageY);

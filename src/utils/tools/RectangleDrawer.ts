@@ -38,10 +38,7 @@ class RectangleDrawer implements Tool {
       return;
     }
     this.rectStart = [e.pageX, e.pageY];
-    this.currentFigure = new Figure(
-      this.canvasContext.context,
-      this.canvasContext.offset,
-    );
+    this.currentFigure = new Figure();
     this.canvasContext.addFigure(this.currentFigure);
   }
 
