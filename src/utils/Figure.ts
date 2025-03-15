@@ -58,6 +58,36 @@ class Figure {
     this.updateBoundingRect(x, y);
   }
 
+  drawEllipse({ x1, y1, x2, y2 }: Rect) {
+    [x1, y1] = this.translateClientPoint(x1, y1);
+    [x2, y2] = this.translateClientPoint(x2, y2);
+    this.updateBoundingRect(x1, y1);
+    this.updateBoundingRect(x2, y2);
+    const centerX = (x1 + x2) / 2;
+    const centerY = (y1 + y2) / 2;
+    const radiusX = Math.abs(x2 - x1) / 2;
+    const radiusY = Math.abs(y2 - y1) / 2;
+    canvasContext.context?.beginPath();
+    this.instructions.push(["beginPath", []]);
+    canvasContext.context?.ellipse(
+      centerX,
+      centerY,
+      radiusX,
+      radiusY,
+      0,
+      0,
+      2 * Math.PI,
+    );
+    this.instructions.push([
+      "ellipse",
+      [centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI],
+    ]);
+    canvasContext.context?.fill();
+    this.instructions.push(["fill", []]);
+    canvasContext.context?.stroke();
+    this.instructions.push(["stroke", []]);
+  }
+
   drawRect(rect: Rect) {
     this.drawPolygon([
       [rect.x1, rect.y1],

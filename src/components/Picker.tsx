@@ -9,14 +9,12 @@ const Picker = <T,>({
   options,
   onSelect,
 }: {
-  title: string,
+  title: string;
   options: Options<T>;
   defaultValue?: null | T;
   onSelect: (value: T) => void;
 }) => {
-  const [selectedValue, setSelectedValue] = useState<T | null>(
-    defaultValue
-  );
+  const [selectedValue, setSelectedValue] = useState<T | null>(defaultValue);
 
   const handleClick = (value: T) => () => {
     setSelectedValue(value);
@@ -27,11 +25,11 @@ const Picker = <T,>({
       <h3 className="picker-title">{title}</h3>
       <div className="picker-items">
         {options.map(({ icon, value }) => (
-            <ToolButton
+          <ToolButton
             icon={icon}
             onClick={handleClick(value)}
             isActive={String(selectedValue) == String(value)}
-            />
+          />
         ))}
       </div>
     </div>

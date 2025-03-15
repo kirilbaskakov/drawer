@@ -1,7 +1,7 @@
 import Canvas from "./components/Canvas";
 import ToolButton from "./components/ToolButton";
 import { FaRegHandPaper, FaPencilAlt } from "react-icons/fa";
-import { PiCursor, PiEraser, PiRectangle } from "react-icons/pi";
+import { PiCursor, PiEraser, PiRectangle, PiCircle } from "react-icons/pi";
 import { IoTextOutline } from "react-icons/io5";
 import { TfiLayoutLineSolid } from "react-icons/tfi";
 import { canvasContext } from "./utils/CanvasContext";
@@ -15,6 +15,7 @@ import { rectangleDrawer } from "./utils/tools/RectangleDrawer";
 import ToolSettingsPanel from "./components/ToolSettingsPanel";
 import Zoom from "./components/Zoom";
 import { select } from "./utils/tools/Select";
+import { circleDrawer } from "./utils/tools/CircleDrawer";
 
 const menu = [
   {
@@ -36,6 +37,10 @@ const menu = [
   {
     icon: <PiRectangle />,
     tool: rectangleDrawer,
+  },
+  {
+    icon: <PiCircle />,
+    tool: circleDrawer,
   },
   {
     icon: <PiEraser />,
