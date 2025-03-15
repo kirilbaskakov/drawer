@@ -1,8 +1,10 @@
 import CanvasContext, { canvasContext } from "../CanvasContext";
 import throttle from "../throttle";
-import Tool from "../Tool";
+import Tool from "../../types/Tool";
 
 class Hand implements Tool {
+  cursor: string = "grab";
+
   private canvasContext: CanvasContext;
   private position: [number, number] | null = null;
 
@@ -13,13 +15,16 @@ class Hand implements Tool {
 
   handleMouseUp() {
     this.position = null;
+    if (this.canvasContext.canvas) {
+      this.canvasContext.canvas.style.cursor = "grab";
+    }
   }
 
   handleMouseMove(e: MouseEvent) {
     if (this.position) {
       this.canvasContext.translate(
-        e.pageX - this.position[0],
-        e.pageY - this.position[1],
+        (e.pageX - this.position[0]) / this.canvasContext.scaleFactor,
+        (e.pageY - this.position[1]) / this.canvasContext.scaleFactor,
       );
       this.position = [e.pageX, e.pageY];
     }
@@ -27,6 +32,9 @@ class Hand implements Tool {
 
   handleMouseDown(e: MouseEvent) {
     this.position = [e.pageX, e.pageY];
+    if (this.canvasContext.canvas) {
+      this.canvasContext.canvas.style.cursor = "grabbing";
+    }
   }
 }
 

@@ -1,9 +1,11 @@
 import Rect from "../../types/Rect";
 import CanvasContext, { canvasContext } from "../CanvasContext";
 import throttle from "../throttle";
-import Tool from "../Tool";
+import Tool from "../../types/Tool";
 
 class Eraser implements Tool {
+  cursor: string = "none";
+
   private canvasContext: CanvasContext;
   private size = 10;
   private isErasing = false;

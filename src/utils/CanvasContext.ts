@@ -2,7 +2,7 @@ import { DEFAULT_STYLES } from "../constants/drawingDefaults";
 import { CanvasStyles } from "../types/CanvasStyles";
 import Rect from "../types/Rect";
 import Figure from "./Figure";
-import Tool from "./Tool";
+import Tool from "../types/Tool";
 
 class CanvasContext extends EventTarget {
   context: CanvasRenderingContext2D | null = null;
@@ -10,10 +10,12 @@ class CanvasContext extends EventTarget {
   figures: Figure[] = [];
   offset: [number, number] = [0, 0];
   styles: CanvasStyles = DEFAULT_STYLES;
+  canvas: HTMLCanvasElement | null = null;
   scaleFactor = 1;
 
   connectCanvas(canvas: HTMLCanvasElement) {
     this.context = canvas.getContext("2d");
+    this.canvas = canvas;
     canvas.onmouseup = (e) => {
       if (this.activeTool) {
         this.activeTool.handleMouseUp(e);
@@ -34,19 +36,25 @@ class CanvasContext extends EventTarget {
   zoom(zoom: number) {
     if (!this.context) return;
     this.context.scale(zoom / this.scaleFactor, zoom / this.scaleFactor);
-    this.offset[0] *= zoom / this.scaleFactor;
-    this.offset[1] *= zoom / this.scaleFactor;
     this.scaleFactor = zoom;
     this.repaint();
   }
 
-
   setStyles(styles: Partial<CanvasStyles>) {
-    this.styles = {...this.styles, ...styles}
+    this.styles = { ...this.styles, ...styles };
+    if (this.activeTool?.updateStyles) {
+      this.activeTool?.updateStyles(styles);
+    }
   }
 
   setActiveTool(tool: Tool) {
+    if (this.activeTool?.reset) {
+      this.activeTool.reset();
+    }
     this.activeTool = tool;
+    if (this.canvas) {
+      this.canvas.style.cursor = tool.cursor;
+    }
   }
 
   addFigure(figure: Figure) {
@@ -58,7 +66,7 @@ class CanvasContext extends EventTarget {
   }
 
   selectFiguresInRect(rect: Rect) {
-    return this.figures.filter((figures) => figures.containsIn(rect));
+    return this.figures.filter((figure) => figure.containsIn(rect));
   }
 
   deleteFigure(figure: Figure) {
@@ -69,8 +77,8 @@ class CanvasContext extends EventTarget {
 
   translate(clientDx: number, clientDy: number) {
     this.context?.translate(clientDx, clientDy);
-    this.offset[0] += clientDx / this.scaleFactor;
-    this.offset[1] += clientDy / this.scaleFactor;
+    this.offset[0] += clientDx * this.scaleFactor;
+    this.offset[1] += clientDy * this.scaleFactor;
     this.repaint();
   }
 
@@ -85,4 +93,3 @@ class CanvasContext extends EventTarget {
 export const canvasContext = new CanvasContext();
 
 export default CanvasContext;
-

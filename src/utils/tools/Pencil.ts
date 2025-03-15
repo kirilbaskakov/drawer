@@ -1,14 +1,18 @@
 import CanvasContext, { canvasContext } from "../CanvasContext";
 import Figure from "../Figure";
-import Tool from "../Tool";
+import Tool from "../../types/Tool";
+import throttle from "../throttle";
 
 class Pencil implements Tool {
+  cursor: string = "crosshair";
+
   private canvasContext: CanvasContext;
   private isDrawing: boolean = false;
   private currentFigure: Figure | null = null;
 
   constructor(canvasContext: CanvasContext) {
     this.canvasContext = canvasContext;
+    this.handleMouseMove = throttle(this.handleMouseMove, 50);
   }
 
   handleMouseUp(e: MouseEvent) {

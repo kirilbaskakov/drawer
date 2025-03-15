@@ -10,15 +10,20 @@ import { pencil } from "./utils/tools/Pencil";
 import { lineDrawer } from "./utils/tools/LineDrawer";
 import { eraser } from "./utils/tools/Eraser";
 import { useState } from "react";
-import Tool from "./utils/Tool";
+import Tool from "./types/Tool";
 import { rectangleDrawer } from "./utils/tools/RectangleDrawer";
 import ToolSettingsPanel from "./components/ToolSettingsPanel";
 import Zoom from "./components/Zoom";
+import { select } from "./utils/tools/Select";
 
 const menu = [
   {
     icon: <FaRegHandPaper />,
     tool: hand,
+  },
+  {
+    icon: <PiCursor />,
+    tool: select,
   },
   {
     icon: <FaPencilAlt />,
@@ -59,8 +64,8 @@ function App() {
           />
         ))}
       </div>
-      <ToolSettingsPanel/>
-      <Zoom/>
+      <ToolSettingsPanel />
+      <Zoom />
     </>
   );
 }

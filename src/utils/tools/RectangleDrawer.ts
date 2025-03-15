@@ -1,10 +1,11 @@
-import Rect from "../../types/Rect";
 import CanvasContext, { canvasContext } from "../CanvasContext";
 import Figure from "../Figure";
 import throttle from "../throttle";
-import Tool from "../Tool";
+import Tool from "../../types/Tool";
 
 class RectangleDrawer implements Tool {
+  cursor: string = "crosshair";
+
   private canvasContext: CanvasContext;
   private currentFigure: Figure | null = null;
   private rectStart: null | [number, number] = null;
@@ -24,7 +25,7 @@ class RectangleDrawer implements Tool {
       return;
     }
     this.currentFigure.clear();
-    this.drawRect({
+    this.currentFigure.drawRect({
       x1: this.rectStart[0],
       y1: this.rectStart[1],
       x2: e.pageX,
@@ -40,18 +41,6 @@ class RectangleDrawer implements Tool {
     this.rectStart = [e.pageX, e.pageY];
     this.currentFigure = new Figure();
     this.canvasContext.addFigure(this.currentFigure);
-  }
-
-  private drawRect({ x1, y1, x2, y2 }: Rect) {
-    if (!this.currentFigure) {
-      return;
-    }
-    this.currentFigure.drawPolygon([
-      [x1, y1],
-      [x2, y1],
-      [x2, y2],
-      [x1, y2],
-    ]);
   }
 }
 

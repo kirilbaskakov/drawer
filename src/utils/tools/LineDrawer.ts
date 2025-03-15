@@ -1,9 +1,11 @@
 import CanvasContext, { canvasContext } from "../CanvasContext";
 import Figure from "../Figure";
 import throttle from "../throttle";
-import Tool from "../Tool";
+import Tool from "../../types/Tool";
 
 class LineDrawer implements Tool {
+  cursor: string = "crosshair";
+
   private canvasContext: CanvasContext;
   private lineStart: null | [number, number] = null;
   private currentFigure: Figure | null = null;
