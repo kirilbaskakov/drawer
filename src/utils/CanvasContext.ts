@@ -31,6 +31,11 @@ class CanvasContext extends EventTarget {
         this.activeTool.handleMouseDown(e);
       }
     };
+    canvas.onmouseleave = (e) => {
+      if (this.activeTool?.handleMouseLeave) {
+        this.activeTool.handleMouseLeave(e);
+      }
+    };
   }
 
   zoom(zoom: number) {
