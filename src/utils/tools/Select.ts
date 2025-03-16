@@ -9,6 +9,9 @@ import throttle from "../throttle";
 import Tool from "../../types/Tool";
 import isPointInRect from "../geometry/isPointInRect";
 import { CanvasStyles } from "../../types/CanvasStyles";
+import addPadding from "../geometry/addPadding";
+import KeyBindings from "../../constants/hotkeys";
+import { keyComboListener } from "../KeyComboListener";
 
 class Select implements Tool {
   cursor: string = "default";
@@ -27,6 +30,12 @@ class Select implements Tool {
   constructor(canvasContext: CanvasContext) {
     this.canvasContext = canvasContext;
     this.handleMouseMove = throttle(this.handleMouseMove, 50);
+    keyComboListener.subscribe(KeyBindings.DELETE, () => {
+      if (this.selectedFigures) {
+        this.canvasContext.deleteFigures(this.selectedFigures);
+        this.reset();
+      }
+    });
   }
 
   handleMouseUp() {
@@ -59,12 +68,108 @@ class Select implements Tool {
       return;
     }
     if (!this.isSelecting) {
-      if (
-        isPointInRect(
-          { x: e.pageX, y: e.pageY },
-          this.selectedRects.getClientBoundingRect(),
-        )
+      const point = { x: e.pageX, y: e.pageY };
+      const bRect = this.selectedRects.getClientBoundingRect();
+      const inner = addPadding(bRect, -5, -5);
+      const borderLeft = addPadding(
+        {
+          x1: bRect.x1,
+          y1: bRect.y1,
+          x2: bRect.x1,
+          y2: bRect.y2,
+        },
+        5,
+        -5,
+      );
+      const borderRight = addPadding(
+        {
+          x1: bRect.x2,
+          y1: bRect.y1,
+          x2: bRect.x2,
+          y2: bRect.y2,
+        },
+        5,
+        -5,
+      );
+      const borderTop = addPadding(
+        {
+          x1: bRect.x1,
+          y1: bRect.y1,
+          x2: bRect.x2,
+          y2: bRect.y1,
+        },
+        -5,
+        5,
+      );
+      const borderBottom = addPadding(
+        {
+          x1: bRect.x1,
+          y1: bRect.y2,
+          x2: bRect.x2,
+          y2: bRect.y2,
+        },
+        -5,
+        5,
+      );
+      const cornerSE = addPadding(
+        {
+          x1: bRect.x1,
+          y1: bRect.y1,
+          x2: bRect.x1,
+          y2: bRect.y1,
+        },
+        5,
+        5,
+      );
+      const cornerNE = addPadding(
+        {
+          x1: bRect.x2,
+          y1: bRect.y1,
+          x2: bRect.x2,
+          y2: bRect.y1,
+        },
+        5,
+        5,
+      );
+      const cornerSW = addPadding(
+        {
+          x1: bRect.x1,
+          y1: bRect.y2,
+          x2: bRect.x1,
+          y2: bRect.y2,
+        },
+        5,
+        5,
+      );
+      const cornerNW = addPadding(
+        {
+          x1: bRect.x2,
+          y1: bRect.y2,
+          x2: bRect.x2,
+          y2: bRect.y2,
+        },
+        5,
+        5,
+      );
+      if (isPointInRect(point, cornerSE)) {
+        this.canvasContext.canvas.style.cursor = "se-resize";
+      } else if (isPointInRect(point, cornerNE)) {
+        this.canvasContext.canvas.style.cursor = "ne-resize";
+      } else if (isPointInRect(point, cornerSW)) {
+        this.canvasContext.canvas.style.cursor = "sw-resize";
+      } else if (isPointInRect(point, cornerNW)) {
+        this.canvasContext.canvas.style.cursor = "nw-resize";
+      } else if (
+        isPointInRect(point, borderLeft) ||
+        isPointInRect(point, borderRight)
       ) {
+        this.canvasContext.canvas.style.cursor = "w-resize";
+      } else if (
+        isPointInRect(point, borderTop) ||
+        isPointInRect(point, borderBottom)
+      ) {
+        this.canvasContext.canvas.style.cursor = "n-resize";
+      } else if (isPointInRect(point, inner)) {
         this.canvasContext.canvas.style.cursor = "move";
       } else {
         this.canvasContext.canvas.style.cursor = "default";
@@ -177,14 +282,11 @@ class Select implements Tool {
       return;
     }
     this.selectedRects.clear();
-    this.selectedFigures.forEach((figure) => {
-      const rect = figure.getClientBoundingRect();
-      rect.x1 -= 5;
-      rect.y1 -= 5;
-      rect.x2 += 5;
-      rect.y2 += 5;
-      this.selectedRects?.drawRect(rect);
-    });
+    this.selectedFigures.forEach((figure) =>
+      this.selectedRects?.drawRect(
+        addPadding(figure.getClientBoundingRect(), 5, 5),
+      ),
+    );
     this.selectedRects?.drawRect(this.selectedRects.getClientBoundingRect());
   }
 }

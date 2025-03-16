@@ -5,6 +5,8 @@ import Figure from "./Figure";
 import Tool from "../types/Tool";
 import CanvasOperation from "../types/CanvasOperation";
 import { makeAutoObservable } from "mobx";
+import { keyComboListener } from "./KeyComboListener";
+import KeyBindings from "../constants/hotkeys";
 
 class CanvasContext {
   context: CanvasRenderingContext2D | null = null;
@@ -21,6 +23,14 @@ class CanvasContext {
 
   constructor() {
     makeAutoObservable(this);
+    keyComboListener.subscribe(KeyBindings.UNDO, () => this.undo());
+    keyComboListener.subscribe(KeyBindings.REDO, () => this.redo());
+    keyComboListener.subscribe(KeyBindings.ZOOM_IN, () =>
+      this.zoom(this.scaleFactor + 0.1),
+    );
+    keyComboListener.subscribe(KeyBindings.ZOOM_OUT, () =>
+      this.zoom(this.scaleFactor - 0.1),
+    );
   }
 
   connectCanvas(canvas: HTMLCanvasElement) {
@@ -87,6 +97,14 @@ class CanvasContext {
     }
   }
 
+  addFigures(figures: Figure[]) {
+    figures.forEach((figure) => this._addFigure(figure));
+    this.addOperation({
+      apply: () => figures.forEach((figure) => this._addFigure(figure)),
+      rollback: () => figures.forEach((figure) => this._deleteFigure(figure)),
+    });
+  }
+
   selectFiguresIntersectRect(rect: Rect) {
     return this.figures.filter((figure) => figure.intersectWith(rect));
   }
@@ -103,6 +121,14 @@ class CanvasContext {
         rollback: () => this._addFigure(figure),
       });
     }
+  }
+
+  deleteFigures(figures: Figure[]) {
+    figures.forEach((figure) => this._deleteFigure(figure));
+    this.addOperation({
+      apply: () => figures.forEach((figure) => this._deleteFigure(figure)),
+      rollback: () => figures.forEach((figure) => this._addFigure(figure)),
+    });
   }
 
   translate(clientDx: number, clientDy: number) {

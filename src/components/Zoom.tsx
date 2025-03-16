@@ -1,13 +1,10 @@
-import { useState } from "react";
 import { canvasContext } from "../utils/CanvasContext";
+import { observer } from "mobx-react-lite";
 
-const Zoom = () => {
-  const [zoom, setZoom] = useState(1);
-
+const Zoom = observer(() => {
   const updateZoom = (delta: number) => () => {
-    const newZoom = zoom + delta;
+    const newZoom = canvasContext.scaleFactor + delta;
     if (newZoom > 0.05 && newZoom <= 30) {
-      setZoom(newZoom);
       canvasContext.zoom(newZoom);
     }
   };
@@ -17,12 +14,14 @@ const Zoom = () => {
       <button className="zoom-button" onClick={updateZoom(-0.1)}>
         -
       </button>
-      <p className="zoom-value">{Math.round(zoom * 100)}%</p>
+      <p className="zoom-value">
+        {Math.round(canvasContext.scaleFactor * 100)}%
+      </p>
       <button className="zoom-button" onClick={updateZoom(0.1)}>
         +
       </button>
     </div>
   );
-};
+});
 
 export default Zoom;
