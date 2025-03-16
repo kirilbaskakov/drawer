@@ -3,8 +3,10 @@ import { CanvasStyles } from "../types/CanvasStyles";
 import Rect from "../types/Rect";
 import Figure from "./Figure";
 import Tool from "../types/Tool";
+import CanvasOperation from "../types/CanvasOperation";
+import { makeAutoObservable } from "mobx";
 
-class CanvasContext extends EventTarget {
+class CanvasContext {
   context: CanvasRenderingContext2D | null = null;
   activeTool: Tool | null = null;
   figures: Figure[] = [];
@@ -12,6 +14,13 @@ class CanvasContext extends EventTarget {
   styles: CanvasStyles = DEFAULT_STYLES;
   canvas: HTMLCanvasElement | null = null;
   scaleFactor = 1;
+
+  private undoStack: CanvasOperation[] = [];
+  private redoStack: CanvasOperation[] = [];
+
+  constructor() {
+    makeAutoObservable(this);
+  }
 
   connectCanvas(canvas: HTMLCanvasElement) {
     this.context = canvas.getContext("2d");
@@ -63,7 +72,13 @@ class CanvasContext extends EventTarget {
   }
 
   addFigure(figure: Figure) {
-    this.figures.push(figure);
+    this._addFigure(figure);
+    if (!figure.isAdditional) {
+      this.addOperation({
+        apply: () => this._addFigure(figure),
+        rollback: () => this._deleteFigure(figure),
+      });
+    }
   }
 
   selectFiguresIntersectRect(rect: Rect) {
@@ -75,9 +90,13 @@ class CanvasContext extends EventTarget {
   }
 
   deleteFigure(figure: Figure) {
-    figure.clearBoundingRect();
-    this.figures = this.figures.filter((fig) => fig !== figure);
-    this.repaint();
+    this._deleteFigure(figure);
+    if (!figure.isAdditional) {
+      this.addOperation({
+        apply: () => this._deleteFigure(figure),
+        rollback: () => this._addFigure(figure),
+      });
+    }
   }
 
   translate(clientDx: number, clientDy: number) {
@@ -92,6 +111,55 @@ class CanvasContext extends EventTarget {
     this.figures.forEach((figure) => {
       figure.repaint();
     });
+  }
+
+  addOperation(operation: CanvasOperation) {
+    this.undoStack.push(operation);
+    this.redoStack = [];
+  }
+
+  get canUndo() {
+    return !!this.undoStack.length;
+  }
+
+  get canRedo() {
+    return !!this.redoStack.length;
+  }
+
+  undo() {
+    if (this.activeTool?.reset) {
+      this.activeTool.reset();
+    }
+    const operation = this.undoStack.pop();
+    if (!operation) {
+      return;
+    }
+    operation.rollback();
+    this.redoStack.push(operation);
+    this.repaint();
+  }
+
+  redo() {
+    if (this.activeTool?.reset) {
+      this.activeTool.reset();
+    }
+    const operation = this.redoStack.pop();
+    if (!operation) {
+      return;
+    }
+    operation.apply();
+    this.undoStack.push(operation);
+    this.repaint();
+  }
+
+  private _addFigure(figure: Figure) {
+    this.figures.push(figure);
+  }
+
+  private _deleteFigure(figure: Figure) {
+    figure.clearBoundingRect();
+    this.figures = this.figures.filter((fig) => fig !== figure);
+    this.repaint();
   }
 }
 

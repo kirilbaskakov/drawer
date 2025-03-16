@@ -16,6 +16,7 @@ import ToolSettingsPanel from "./components/ToolSettingsPanel";
 import Zoom from "./components/Zoom";
 import { select } from "./utils/tools/Select";
 import { circleDrawer } from "./utils/tools/CircleDrawer";
+import UndoRedo from "./components/UndoRedo";
 
 const menu = [
   {
@@ -71,6 +72,7 @@ function App() {
       </div>
       <ToolSettingsPanel />
       <Zoom />
+      <UndoRedo />
     </>
   );
 }

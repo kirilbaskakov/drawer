@@ -9,6 +9,7 @@ const INF = 999999;
 
 class Figure {
   id: number;
+  isAdditional = false;
   boundingRect: Rect = { x1: INF, y1: INF, x2: INF, y2: INF };
   styles: CanvasStyles;
 
@@ -17,7 +18,8 @@ class Figure {
   private segments: Segment[] = [];
   private segStart: [number, number] = [0, 0];
 
-  constructor() {
+  constructor(isAdditional = false) {
+    this.isAdditional = isAdditional;
     this.id = +new Date();
     this.styles = { ...canvasContext.styles };
     this.applyStyles();

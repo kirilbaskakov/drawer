@@ -23,8 +23,12 @@ class Eraser implements Tool {
 
   handleMouseMove(e: MouseEvent) {
     if (!this.cursorFigure) {
-      this.cursorFigure = new Figure();
-      this.cursorFigure.setStyles({ lineWidth: 1, fillStyle: "white" });
+      this.cursorFigure = new Figure(true);
+      this.cursorFigure.setStyles({
+        lineWidth: 1,
+        fillStyle: "white",
+        strokeStyle: "black",
+      });
       this.canvasContext.addFigure(this.cursorFigure);
     }
     const position = [e.pageX, e.pageY];

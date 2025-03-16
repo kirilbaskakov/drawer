@@ -14,6 +14,8 @@
     "prepare": "git config core.hooksPath .git-hooks && chmod +x .git-hooks/pre-commit"
   },
   "dependencies": {
+    "mobx": "^6.13.6",
+    "mobx-react-lite": "^4.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0"

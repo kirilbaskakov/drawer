@@ -41,6 +41,11 @@ body {
   bottom: 15px;
 }
 
+.toolbar-bottom-left {
+  left: 15px;
+  bottom: 15px;
+}
+
 .tool-button {
   display: flex;
   justify-content: center;
@@ -112,4 +117,15 @@ body {
   width: 30px;
   height: 30px;
   font-size: 24px;
+}
+
+.undo-redo-button {
+  cursor: pointer;
+  padding: 0.5rem;
+  background-color: #efefef;
+  border: none;
+}
+
+.undo-redo-button:disabled {
+  color: #aaa;
 }
