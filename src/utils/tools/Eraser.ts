@@ -3,9 +3,11 @@ import CanvasContext, { canvasContext } from "../CanvasContext";
 import throttle from "../throttle";
 import Tool from "../../types/Tool";
 import Figure from "../Figure";
+import { CanvasStyles } from "../../types/CanvasStyles";
 
 class Eraser implements Tool {
   cursor: string = "none";
+  definableStyles: Array<keyof CanvasStyles> = [];
 
   private canvasContext: CanvasContext;
   private size = 10;

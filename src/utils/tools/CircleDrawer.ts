@@ -2,9 +2,16 @@ import CanvasContext, { canvasContext } from "../CanvasContext";
 import Figure from "../Figure";
 import throttle from "../throttle";
 import Tool from "../../types/Tool";
+import { CanvasStyles } from "../../types/CanvasStyles";
 
 class CircleDrawer implements Tool {
   cursor: string = "crosshair";
+  definableStyles: Array<keyof CanvasStyles> = [
+    "strokeStyle",
+    "lineWidth",
+    "lineDash",
+    "fillStyle",
+  ];
 
   private canvasContext: CanvasContext;
   private currentFigure: Figure | null = null;

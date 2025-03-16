@@ -2,6 +2,7 @@ import { CanvasStyles } from "./CanvasStyles";
 
 interface Tool {
   cursor: string;
+  definableStyles: Array<keyof CanvasStyles>;
 
   handleMouseUp: (e: MouseEvent) => void;
   handleMouseDown: (e: MouseEvent) => void;

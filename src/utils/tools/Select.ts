@@ -12,6 +12,7 @@ import { CanvasStyles } from "../../types/CanvasStyles";
 
 class Select implements Tool {
   cursor: string = "default";
+  definableStyles: Array<keyof CanvasStyles> = [];
 
   private canvasContext: CanvasContext;
   private position: [number, number] | null = null;
@@ -99,6 +100,16 @@ class Select implements Tool {
           figure.id != this.selectionRect?.id &&
           figure.id != this.selectedRects?.id,
       );
+    if (this.selectedFigures.length) {
+      this.canvasContext.setDefinableStyles([
+        "strokeStyle",
+        "lineWidth",
+        "lineDash",
+        "fillStyle",
+      ]);
+    } else {
+      this.canvasContext.setDefinableStyles([]);
+    }
     this.drawSelectedRects();
     this.canvasContext.repaint();
   }
@@ -115,6 +126,7 @@ class Select implements Tool {
       this.isSelecting = false;
       return;
     }
+    this.canvasContext.setDefinableStyles([]);
     this.isSelecting = true;
     this.selectedFigures = [];
     if (this.selectedRects) {
@@ -138,6 +150,7 @@ class Select implements Tool {
       this.selectionRect = null;
     }
     this.selectedFigures = [];
+    this.definableStyles = [];
   }
 
   updateStyles(styles: Partial<CanvasStyles>) {

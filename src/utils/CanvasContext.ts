@@ -14,6 +14,7 @@ class CanvasContext {
   styles: CanvasStyles = DEFAULT_STYLES;
   canvas: HTMLCanvasElement | null = null;
   scaleFactor = 1;
+  definableStyles: Array<keyof CanvasStyles> = [];
 
   private undoStack: CanvasOperation[] = [];
   private redoStack: CanvasOperation[] = [];
@@ -54,6 +55,10 @@ class CanvasContext {
     this.repaint();
   }
 
+  setDefinableStyles(definableStyles: Array<keyof CanvasStyles>) {
+    this.definableStyles = definableStyles;
+  }
+
   setStyles(styles: Partial<CanvasStyles>) {
     this.styles = { ...this.styles, ...styles };
     if (this.activeTool?.updateStyles) {
@@ -66,6 +71,7 @@ class CanvasContext {
       this.activeTool.reset();
     }
     this.activeTool = tool;
+    this.setDefinableStyles(tool.definableStyles);
     if (this.canvas) {
       this.canvas.style.cursor = tool.cursor;
     }

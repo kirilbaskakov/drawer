@@ -1,9 +1,11 @@
 import CanvasContext, { canvasContext } from "../CanvasContext";
 import throttle from "../throttle";
 import Tool from "../../types/Tool";
+import { CanvasStyles } from "../../types/CanvasStyles";
 
 class Hand implements Tool {
   cursor: string = "grab";
+  definableStyles: Array<keyof CanvasStyles> = [];
 
   private canvasContext: CanvasContext;
   private position: [number, number] | null = null;

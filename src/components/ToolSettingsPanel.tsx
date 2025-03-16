@@ -8,76 +8,89 @@ import {
   LINE_WIDTHS,
   STROKE_COLORS,
 } from "../constants/drawingDefaults";
+import { observer } from "mobx-react-lite";
 
-const ToolSettingsPanel = () => {
+const ToolSettingsPanel = observer(() => {
   const updateOptions = (optionName: string) => (value: unknown) => {
     canvasContext.setStyles({ [optionName]: value });
   };
 
+  if (!canvasContext.definableStyles.length) {
+    return null;
+  }
+
   return (
     <div className="toolbar toolbar-top-left">
-      <Picker
-        title={"Обводка"}
-        options={STROKE_COLORS.map((color) => ({
-          icon: (
-            <div
-              className="custom-tool-icon"
-              style={{ backgroundColor: color }}
-            />
-          ),
-          value: color,
-        }))}
-        defaultValue={DEFAULT_STYLES.strokeStyle}
-        onSelect={updateOptions("strokeStyle")}
-      />
-      <Picker
-        title={"Фон"}
-        options={FILL_COLORS.map((color) => ({
-          icon: (
-            <div
-              className="custom-tool-icon"
-              style={{ backgroundColor: color }}
-            />
-          ),
-          value: color,
-        }))}
-        defaultValue={DEFAULT_STYLES.fillStyle}
-        onSelect={updateOptions("fillStyle")}
-      />
-      <Picker
-        title={"Толщина обводки"}
-        options={LINE_WIDTHS.map((width, index) => ({
-          icon: (
-            <div className="custom-tool-icon">
+      {canvasContext.definableStyles.includes("strokeStyle") && (
+        <Picker
+          title={"Обводка"}
+          options={STROKE_COLORS.map((color) => ({
+            icon: (
               <div
-                className="line-width-icon"
-                style={{ borderTopWidth: (index + 1) * 2 }}
+                className="custom-tool-icon"
+                style={{ backgroundColor: color }}
               />
-            </div>
-          ),
-          value: width,
-        }))}
-        defaultValue={DEFAULT_STYLES.lineWidth}
-        onSelect={updateOptions("lineWidth")}
-      />
-      <Picker
-        title={"Стиль обводки"}
-        options={LINE_DASH.map((dash) => ({
-          icon: (
-            <div className="custom-tool-icon">
+            ),
+            value: color,
+          }))}
+          defaultValue={DEFAULT_STYLES.strokeStyle}
+          onSelect={updateOptions("strokeStyle")}
+        />
+      )}
+      {canvasContext.definableStyles.includes("fillStyle") && (
+        <Picker
+          title={"Фон"}
+          options={FILL_COLORS.map((color) => ({
+            icon: (
               <div
-                className="line-width-icon"
-                style={{ borderStyle: dash[0] ? "dashed" : "solid" }}
+                className="custom-tool-icon"
+                style={{ backgroundColor: color }}
               />
-            </div>
-          ),
-          value: dash,
-        }))}
-        defaultValue={DEFAULT_STYLES.lineDash}
-        onSelect={updateOptions("lineDash")}
-      />
+            ),
+            value: color,
+          }))}
+          defaultValue={DEFAULT_STYLES.fillStyle}
+          onSelect={updateOptions("fillStyle")}
+        />
+      )}
+      {canvasContext.definableStyles.includes("lineWidth") && (
+        <Picker
+          title={"Толщина обводки"}
+          options={LINE_WIDTHS.map((width, index) => ({
+            icon: (
+              <div className="custom-tool-icon">
+                <div
+                  className="line-width-icon"
+                  style={{ borderTopWidth: (index + 1) * 2 }}
+                />
+              </div>
+            ),
+            value: width,
+          }))}
+          defaultValue={DEFAULT_STYLES.lineWidth}
+          onSelect={updateOptions("lineWidth")}
+        />
+      )}
+      {canvasContext.definableStyles.includes("lineDash") && (
+        <Picker
+          title={"Стиль обводки"}
+          options={LINE_DASH.map((dash) => ({
+            icon: (
+              <div className="custom-tool-icon">
+                <div
+                  className="line-width-icon"
+                  style={{ borderStyle: dash[0] ? "dashed" : "solid" }}
+                />
+              </div>
+            ),
+            value: dash,
+          }))}
+          defaultValue={DEFAULT_STYLES.lineDash}
+          onSelect={updateOptions("lineDash")}
+        />
+      )}
     </div>
   );
-};
+});
 
 export default ToolSettingsPanel;

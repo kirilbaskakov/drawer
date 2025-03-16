@@ -2,9 +2,15 @@ import CanvasContext, { canvasContext } from "../CanvasContext";
 import Figure from "../Figure";
 import Tool from "../../types/Tool";
 import throttle from "../throttle";
+import { CanvasStyles } from "../../types/CanvasStyles";
 
 class Pencil implements Tool {
   cursor: string = "crosshair";
+  definableStyles: Array<keyof CanvasStyles> = [
+    "strokeStyle",
+    "lineWidth",
+    "lineDash",
+  ];
 
   private canvasContext: CanvasContext;
   private isDrawing: boolean = false;
