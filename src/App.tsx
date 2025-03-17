@@ -17,6 +17,7 @@ import Zoom from "./components/Zoom";
 import { select } from "./utils/tools/Select";
 import { circleDrawer } from "./utils/tools/CircleDrawer";
 import UndoRedo from "./components/UndoRedo";
+import Menu from "./components/Menu";
 
 const menu = [
   {
@@ -59,6 +60,7 @@ function App() {
 
   return (
     <>
+      <Menu />
       <Canvas />
       <div className="toolbar toolbar-top-center row">
         {menu.map(({ icon, tool }, index) => (

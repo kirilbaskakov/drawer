@@ -20,6 +20,14 @@ export const FILL_COLORS = [
   "#ffc65c",
 ];
 
+export const CANVAS_COLORS = [
+  "#fff",
+  "#F8BBD0",
+  "#B3E5FC",
+  "#B2DFDB",
+  "#E1BEE7",
+];
+
 export const DEFAULT_STYLES: CanvasStyles = {
   strokeStyle: "#000000",
   lineWidth: 4,
