@@ -212,6 +212,7 @@ class Select implements Tool {
         "lineDash",
         "fillStyle",
       ]);
+      this.canvasContext.setStyles(this.selectedFigures[0].styles, false);
     } else {
       this.canvasContext.setDefinableStyles([]);
     }

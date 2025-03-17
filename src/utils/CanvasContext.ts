@@ -69,9 +69,9 @@ class CanvasContext {
     this.definableStyles = definableStyles;
   }
 
-  setStyles(styles: Partial<CanvasStyles>) {
+  setStyles(styles: Partial<CanvasStyles>, updateStyles = true) {
     this.styles = { ...this.styles, ...styles };
-    if (this.activeTool?.updateStyles) {
+    if (updateStyles && this.activeTool?.updateStyles) {
       this.activeTool?.updateStyles(styles);
     }
   }

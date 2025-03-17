@@ -1,34 +1,31 @@
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import ToolButton from "./ToolButton";
 
 type Options<T> = Array<{ icon: ReactNode; value: T }>;
 
 const Picker = <T,>({
   title,
-  defaultValue = null,
   options,
   onSelect,
+  value,
 }: {
   title: string;
   options: Options<T>;
-  defaultValue?: null | T;
   onSelect: (value: T) => void;
+  value: T;
 }) => {
-  const [selectedValue, setSelectedValue] = useState<T | null>(defaultValue);
-
   const handleClick = (value: T) => () => {
-    setSelectedValue(value);
     onSelect(value);
   };
   return (
     <div>
       <h3 className="picker-title">{title}</h3>
       <div className="picker-items">
-        {options.map(({ icon, value }) => (
+        {options.map(({ icon, value: val }) => (
           <ToolButton
             icon={icon}
-            onClick={handleClick(value)}
-            isActive={String(selectedValue) == String(value)}
+            onClick={handleClick(val)}
+            isActive={String(value) == String(val)}
           />
         ))}
       </div>

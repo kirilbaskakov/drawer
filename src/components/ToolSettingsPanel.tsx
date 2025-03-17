@@ -2,7 +2,6 @@ import Picker from "./Picker";
 import "../index.css";
 import { canvasContext } from "../utils/CanvasContext";
 import {
-  DEFAULT_STYLES,
   FILL_COLORS,
   LINE_DASH,
   LINE_WIDTHS,
@@ -33,7 +32,7 @@ const ToolSettingsPanel = observer(() => {
             ),
             value: color,
           }))}
-          defaultValue={DEFAULT_STYLES.strokeStyle}
+          value={canvasContext.styles.strokeStyle}
           onSelect={updateOptions("strokeStyle")}
         />
       )}
@@ -49,7 +48,7 @@ const ToolSettingsPanel = observer(() => {
             ),
             value: color,
           }))}
-          defaultValue={DEFAULT_STYLES.fillStyle}
+          value={canvasContext.styles.fillStyle}
           onSelect={updateOptions("fillStyle")}
         />
       )}
@@ -67,7 +66,7 @@ const ToolSettingsPanel = observer(() => {
             ),
             value: width,
           }))}
-          defaultValue={DEFAULT_STYLES.lineWidth}
+          value={canvasContext.styles.lineWidth}
           onSelect={updateOptions("lineWidth")}
         />
       )}
@@ -85,7 +84,7 @@ const ToolSettingsPanel = observer(() => {
             ),
             value: dash,
           }))}
-          defaultValue={DEFAULT_STYLES.lineDash}
+          value={canvasContext.styles.lineDash}
           onSelect={updateOptions("lineDash")}
         />
       )}
