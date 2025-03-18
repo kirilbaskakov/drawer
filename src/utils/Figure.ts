@@ -1,16 +1,16 @@
+import { DEFAULT_BOUDING_RECT } from "../constants/drawingDefaults";
 import { CanvasStyles } from "../types/CanvasStyles";
 import Rect from "../types/Rect";
 import Segment from "../types/Segment";
 import { canvasContext } from "./CanvasContext";
 import doRectsIntersect from "./geometry/doRectsIntersect";
 import isRectInside from "./geometry/isRectInside";
-
-const INF = 999999;
+import updateBoundingRect from "./geometry/updateBoundingRect";
 
 class Figure {
   id: number;
   isAdditional = false;
-  boundingRect: Rect = { x1: INF, y1: INF, x2: INF, y2: INF };
+  boundingRect: Rect = { ...DEFAULT_BOUDING_RECT };
   styles: CanvasStyles;
 
   private offset = [0, 0];
@@ -41,7 +41,7 @@ class Figure {
     canvasContext.context?.moveTo(x, y);
     this.instructions.push(["moveTo", [x, y]]);
     this.segStart = [x, y];
-    this.updateBoundingRect(x, y);
+    updateBoundingRect(this.boundingRect, x, y);
   }
 
   drawLine(clientX: number, clientY: number) {
@@ -57,14 +57,14 @@ class Figure {
       y2: y,
     });
     this.segStart = [x, y];
-    this.updateBoundingRect(x, y);
+    updateBoundingRect(this.boundingRect, x, y);
   }
 
   drawEllipse({ x1, y1, x2, y2 }: Rect) {
     [x1, y1] = this.translateClientPoint(x1, y1);
     [x2, y2] = this.translateClientPoint(x2, y2);
-    this.updateBoundingRect(x1, y1);
-    this.updateBoundingRect(x2, y2);
+    updateBoundingRect(this.boundingRect, x1, y1);
+    updateBoundingRect(this.boundingRect, x2, y2);
     const centerX = (x1 + x2) / 2;
     const centerY = (y1 + y2) / 2;
     const radiusX = Math.abs(x2 - x1) / 2;
@@ -154,7 +154,7 @@ class Figure {
   clear() {
     this.clearBoundingRect();
     this.instructions = [];
-    this.boundingRect = { x1: INF, y1: INF, x2: INF, y2: INF };
+    this.boundingRect = { ...DEFAULT_BOUDING_RECT };
     this.segments = [];
   }
 
@@ -167,17 +167,6 @@ class Figure {
     });
     canvasContext.context?.stroke();
     canvasContext.context?.restore();
-  }
-
-  private updateBoundingRect(x: number, y: number) {
-    if (this.boundingRect.x1 == INF) {
-      this.boundingRect = { x1: x, y1: y, x2: x, y2: y };
-      return;
-    }
-    this.boundingRect.x1 = Math.min(this.boundingRect.x1, x);
-    this.boundingRect.x2 = Math.max(this.boundingRect.x2, x);
-    this.boundingRect.y1 = Math.min(this.boundingRect.y1, y);
-    this.boundingRect.y2 = Math.max(this.boundingRect.y2, y);
   }
 
   private applyStyles() {

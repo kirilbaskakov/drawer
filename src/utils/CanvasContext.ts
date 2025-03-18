@@ -1,4 +1,7 @@
-import { DEFAULT_STYLES } from "../constants/drawingDefaults";
+import {
+  DEFAULT_BOUDING_RECT,
+  DEFAULT_STYLES,
+} from "../constants/drawingDefaults";
 import { CanvasStyles } from "../types/CanvasStyles";
 import Rect from "../types/Rect";
 import Figure from "./Figure";
@@ -7,6 +10,8 @@ import CanvasOperation from "../types/CanvasOperation";
 import { makeAutoObservable } from "mobx";
 import { keyComboListener } from "./KeyComboListener";
 import KEY_BINDINGS from "../constants/hotkeys";
+import updateBoundingRect from "./geometry/updateBoundingRect";
+import addPadding from "./geometry/addPadding";
 
 class CanvasContext {
   context: CanvasRenderingContext2D | null = null;
@@ -68,11 +73,35 @@ class CanvasContext {
   }
 
   export() {
-    if (!this.canvas) {
+    if (!this.canvas || !this.context) {
       return "";
     }
 
-    return this.canvas.toDataURL("image/png");
+    let boundingRect = { ...DEFAULT_BOUDING_RECT };
+    this.figures.forEach((figure) => {
+      if (figure.isAdditional) {
+        return;
+      }
+      const { x1, y1, x2, y2 } = figure.boundingRect;
+      updateBoundingRect(boundingRect, x1, y1);
+      updateBoundingRect(boundingRect, x2, y2);
+    });
+    boundingRect = addPadding(boundingRect, 10, 10);
+    const zoom = this.scaleFactor;
+    const offset = [...this.offset];
+    this.zoom(1);
+    this.translate(-this.offset[0], -this.offset[1]);
+    const zoomX = this.canvas.clientWidth / (boundingRect.x2 - boundingRect.x1);
+    const zoomY =
+      this.canvas.clientHeight / (boundingRect.y2 - boundingRect.y1);
+    this.zoom(Math.min(zoomX, zoomY));
+    this.translate(-boundingRect.x1, -boundingRect.y1);
+    const data = this.canvas.toDataURL("image/png");
+    this.translate(boundingRect.x1, boundingRect.y1);
+    this.zoom(1);
+    this.zoom(zoom);
+    this.translate(offset[0], offset[1]);
+    return data;
   }
 
   zoom(zoom: number) {

@@ -1,4 +1,5 @@
 import { CanvasStyles } from "../types/CanvasStyles";
+import Rect from "../types/Rect";
 
 export const STROKE_COLORS = [
   "#000000",
@@ -47,4 +48,13 @@ export const SELECTED_STYLES: Partial<CanvasStyles> = {
   fillStyle: "transparent",
   lineWidth: 1,
   lineDash: [],
+};
+
+export const INF = 999999;
+
+export const DEFAULT_BOUDING_RECT: Rect = {
+  x1: INF,
+  y1: INF,
+  x2: INF,
+  y2: INF,
 };

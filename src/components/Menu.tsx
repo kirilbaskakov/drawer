@@ -29,6 +29,8 @@ const Menu = observer(() => {
     ).then((confirmed) => confirmed && canvasContext.clear());
   };
 
+  const newFile = () => {};
+
   return (
     <div className="menu-button" ref={menuRef}>
       <button className="burger" onClick={onBurgerClicked}>
