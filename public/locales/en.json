@@ -1,0 +1,29 @@
+{
+  "translation": {
+    "newFile": "New File",
+    "openFile": "Open",
+    "export": "Export to PNG",
+    "clearCanvas": "Clear Canvas",
+    "language": "Language",
+    "theme": "Theme",
+    "canvasBackground": "Canvas Background",
+    "clearCanvasConfirmTitle": "Are you sure you want to clear the canvas?",
+    "clearCanvasConfirmText": "Your changes will not be saved",
+    "background": "Background",
+    "stroke": "Stroke",
+    "lineWidth": "Line Width",
+    "strokeStyle": "Stroke Style",
+    "hotkeys": "Hotkeys",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "undo": "Undo",
+    "redo": "Redo",
+    "delete": "Delete",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "selectAll": "Select All",
+    "copy": "Copy",
+    "paste": "Paste",
+    "cut": "Cut"
+  }
+}

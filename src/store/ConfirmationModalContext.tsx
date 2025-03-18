@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useRef, useState } from "react";
 import Modal from "../components/Modal";
+import { useTranslation } from "react-i18next";
 
 type ModalContextType = {
   showModal: (title: string, text: string) => Promise<boolean>;
@@ -14,6 +15,7 @@ export const ConfirmationModalContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [modalData, setModalData] = useState({
     title: "",
@@ -56,13 +58,13 @@ export const ConfirmationModalContextProvider = ({
           <p className="confirmation-text">{modalData.text}</p>
           <div className="confirmation-buttons">
             <button className="confirmation-button primary" onClick={onConfirm}>
-              Подтвердить
+              {t("confirm")}
             </button>
             <button
               className="confirmation-button secondary"
               onClick={onCancel}
             >
-              Отмена
+              {t("cancel")}
             </button>
           </div>
         </Modal>

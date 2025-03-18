@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { KEY_BINDINGS_INFO, KEY_NAMES } from "../constants/hotkeys";
 import Modal from "./Modal";
+import { useTranslation } from "react-i18next";
 
 const HotKeysButton = () => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   const onClick = () => {
@@ -15,11 +17,11 @@ const HotKeysButton = () => {
   return (
     <>
       <button className="menu-option" onClick={onClick}>
-        Горячие клавиши
+        {t("hotkeys")}
       </button>
       {isOpen && (
         <Modal onClose={onClose}>
-          <h1 className="modal-title">Горячие клавиши</h1>
+          <h1 className="modal-title">{t("hotkeys")}</h1>
           <div className="hotkeys-list">
             {KEY_BINDINGS_INFO.map(({ name, keys }) => (
               <>

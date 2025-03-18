@@ -1,0 +1,29 @@
+{
+  "translation": {
+    "newFile": "Новый файл",
+    "openFile": "Открыть",
+    "export": "Экспортировать в png",
+    "clearCanvas": "Очистить канвас",
+    "language": "Язык",
+    "theme": "Тема",
+    "canvasBackground": "Фон холста",
+    "clearCanvasConfirmTitle": "Вы действительно хотите очистить холст?",
+    "clearCanvasConfirmText": "Ваши изменения не сохранятся",
+    "background": "Фон",
+    "stroke": "Обводка",
+    "lineWidth": "Толщина обводки",
+    "strokeStyle": "Стиль обводки",
+    "hotkeys": "Горячие клавиши",
+    "confirm": "Подтвердить",
+    "cancel": "Отмена",
+    "undo": "Отменить",
+    "redo": "Повторить",
+    "delete": "Удалить",
+    "zoomIn": "Увеличить масштаб",
+    "zoomOut": "Уменьшить масштаб",
+    "selectAll": "Выделить всё",
+    "copy": "Копировать",
+    "paste": "Вставить",
+    "cut": "Вырезать"
+  }
+}

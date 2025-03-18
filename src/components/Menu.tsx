@@ -6,8 +6,11 @@ import { observer } from "mobx-react-lite";
 import { canvasContext } from "../utils/CanvasContext";
 import HotKeysButton from "./HotKeys";
 import useConfirm from "../hooks/useConfirm";
+import { useTranslation } from "react-i18next";
+import LanguageSelect from "./LanguageSelect";
 
 const Menu = observer(() => {
+  const { t } = useTranslation();
   const menuRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
   const [isOpen, setIsOpen] = useState(false);
   const { showModal } = useConfirm();
@@ -23,10 +26,9 @@ const Menu = observer(() => {
   };
 
   const clearCanvas = () => {
-    showModal(
-      "Вы действительно хотите очистить холст?",
-      "Ваши изменения не сохранятся",
-    ).then((confirmed) => confirmed && canvasContext.clear());
+    showModal(t("clearCanvasConfirmTitle"), t("clearCanvasConfirmText")).then(
+      (confirmed) => confirmed && canvasContext.clear(),
+    );
   };
 
   const newFile = () => {};
@@ -42,27 +44,23 @@ const Menu = observer(() => {
         <div className="menu">
           <input className="document-title" value="document" />
           <div className="menu-section">
-            <button className="menu-option">Новый файл</button>
-            <button className="menu-option">Открыть</button>
+            <button className="menu-option">{t("newFile")}</button>
+            <button className="menu-option">{t("openFile")}</button>
             <button className="menu-option" onClick={exportToPng}>
-              Экспортировать в png
+              {t("export")}
             </button>
             <button className="menu-option" onClick={clearCanvas}>
-              Очистить холст
+              {t("clearCanvas")}
             </button>
             <HotKeysButton />
           </div>
           <div className="menu-section">
-            <label>Язык</label>
-            <select className="language-select">
-              <option>Русский</option>
-              <option>Английский</option>
-            </select>
-            <label>Тема</label>
+            <LanguageSelect />
+            <label>{t("theme")}</label>
           </div>
           <div className="menu-section">
             <Picker
-              title="Фон холста"
+              title={t("canvasBackground")}
               options={CANVAS_COLORS.map((color) => ({
                 icon: (
                   <div

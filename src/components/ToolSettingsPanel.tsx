@@ -8,8 +8,11 @@ import {
   STROKE_COLORS,
 } from "../constants/drawingDefaults";
 import { observer } from "mobx-react-lite";
+import { useTranslation } from "react-i18next";
 
 const ToolSettingsPanel = observer(() => {
+  const { t } = useTranslation();
+
   const updateOptions = (optionName: string) => (value: unknown) => {
     canvasContext.setStyles({ [optionName]: value });
   };
@@ -22,7 +25,7 @@ const ToolSettingsPanel = observer(() => {
     <div className="toolbar toolbar-top-left">
       {canvasContext.definableStyles.includes("strokeStyle") && (
         <Picker
-          title={"Обводка"}
+          title={t("stroke")}
           options={STROKE_COLORS.map((color) => ({
             icon: (
               <div
@@ -38,7 +41,7 @@ const ToolSettingsPanel = observer(() => {
       )}
       {canvasContext.definableStyles.includes("fillStyle") && (
         <Picker
-          title={"Фон"}
+          title={t("background")}
           options={FILL_COLORS.map((color) => ({
             icon: (
               <div
@@ -54,7 +57,7 @@ const ToolSettingsPanel = observer(() => {
       )}
       {canvasContext.definableStyles.includes("lineWidth") && (
         <Picker
-          title={"Толщина обводки"}
+          title={t("lineWidth")}
           options={LINE_WIDTHS.map((width, index) => ({
             icon: (
               <div className="custom-tool-icon">
@@ -72,7 +75,7 @@ const ToolSettingsPanel = observer(() => {
       )}
       {canvasContext.definableStyles.includes("lineDash") && (
         <Picker
-          title={"Стиль обводки"}
+          title={t("strokeStyle")}
           options={LINE_DASH.map((dash) => ({
             icon: (
               <div className="custom-tool-icon">
