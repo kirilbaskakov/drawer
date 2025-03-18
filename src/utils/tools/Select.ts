@@ -10,7 +10,7 @@ import Tool from "../../types/Tool";
 import isPointInRect from "../geometry/isPointInRect";
 import { CanvasStyles } from "../../types/CanvasStyles";
 import addPadding from "../geometry/addPadding";
-import KeyBindings from "../../constants/hotkeys";
+import KEY_BINDINGS from "../../constants/hotkeys";
 import { keyComboListener } from "../KeyComboListener";
 
 class Select implements Tool {
@@ -30,7 +30,7 @@ class Select implements Tool {
   constructor(canvasContext: CanvasContext) {
     this.canvasContext = canvasContext;
     this.handleMouseMove = throttle(this.handleMouseMove, 50);
-    keyComboListener.subscribe(KeyBindings.DELETE, () => {
+    keyComboListener.subscribe(KEY_BINDINGS.DELETE, () => {
       if (this.selectedFigures) {
         this.canvasContext.deleteFigures(this.selectedFigures);
         this.reset();

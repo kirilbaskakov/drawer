@@ -18,6 +18,7 @@ import { select } from "./utils/tools/Select";
 import { circleDrawer } from "./utils/tools/CircleDrawer";
 import UndoRedo from "./components/UndoRedo";
 import Menu from "./components/Menu";
+import { ConfirmationModalContextProvider } from "./store/ConfirmationModalContext";
 
 const menu = [
   {
@@ -59,7 +60,7 @@ function App() {
   };
 
   return (
-    <>
+    <ConfirmationModalContextProvider>
       <Menu />
       <Canvas />
       <div className="toolbar toolbar-top-center row">
@@ -75,7 +76,7 @@ function App() {
       <ToolSettingsPanel />
       <Zoom />
       <UndoRedo />
-    </>
+    </ConfirmationModalContextProvider>
   );
 }
 

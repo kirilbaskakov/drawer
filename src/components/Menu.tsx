@@ -2,13 +2,31 @@ import { useState } from "react";
 import Picker from "./Picker";
 import { CANVAS_COLORS } from "../constants/drawingDefaults";
 import useClickOutside from "../hooks/useClickOutside";
+import { observer } from "mobx-react-lite";
+import { canvasContext } from "../utils/CanvasContext";
+import HotKeysButton from "./HotKeys";
+import useConfirm from "../hooks/useConfirm";
 
-const Menu = () => {
+const Menu = observer(() => {
   const menuRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
   const [isOpen, setIsOpen] = useState(false);
-
+  const { showModal } = useConfirm();
   const onBurgerClicked = () => {
     setIsOpen((isOpen) => !isOpen);
+  };
+
+  const exportToPng = () => {
+    const link = document.createElement("a");
+    link.download = "canvas_image.png";
+    link.href = canvasContext.export();
+    link.click();
+  };
+
+  const clearCanvas = () => {
+    showModal(
+      "Вы действительно хотите очистить холст?",
+      "Ваши изменения не сохранятся",
+    ).then((confirmed) => confirmed && canvasContext.clear());
   };
 
   return (
@@ -24,9 +42,13 @@ const Menu = () => {
           <div className="menu-section">
             <button className="menu-option">Новый файл</button>
             <button className="menu-option">Открыть</button>
-            <button className="menu-option">Сохранить</button>
-            <button className="menu-option">Очистить холст</button>
-            <button className="menu-option">Горячие клавиши</button>
+            <button className="menu-option" onClick={exportToPng}>
+              Экспортировать в png
+            </button>
+            <button className="menu-option" onClick={clearCanvas}>
+              Очистить холст
+            </button>
+            <HotKeysButton />
           </div>
           <div className="menu-section">
             <label>Язык</label>
@@ -48,14 +70,14 @@ const Menu = () => {
                 ),
                 value: color,
               }))}
-              onSelect={console.log}
-              value={CANVAS_COLORS[0]}
+              onSelect={(value) => canvasContext.setCanvasColor(value)}
+              value={canvasContext.canvasColor}
             />
           </div>
         </div>
       )}
     </div>
   );
-};
+});
 
 export default Menu;

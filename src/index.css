@@ -218,3 +218,99 @@ label {
 .undo-redo-button:disabled {
   color: #aaa;
 }
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1rem;
+  border-radius: 8px;
+  z-index: 11;
+  background-color: #fff;
+  box-shadow: 0 0 15px 3px #b5b5b5;
+}
+
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: semibold;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+.hotkeys-list {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.hotkey-sequence {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.hotkey {
+  padding: 0.25rem 0.5rem;
+  background-color: rgba(180, 92, 250, 0.3);
+  border-radius: 8px;
+}
+
+.confirmation-title {
+  font-size: 22px;
+  font-weight: semibold;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.confirmation-text {
+  margin-top: 0.75rem;
+  font-size: 16px;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.confirmation-buttons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.confirmation-button {
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+  cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  color: white;
+  border-radius: 3px;
+}
+
+.confirmation-button.primary {
+  background-color: rgba(180, 92, 250);
+}
+
+.confirmation-button.secondary {
+  background-color: rgba(180, 92, 250, 0.6);
+}
+
+.confirmation-button.primary:hover {
+  background-color: rgba(166, 56, 255);
+}
+
+.confirmation-button.secondary:hover {
+    background-color: rgba(180, 92, 250, 0.8);
+}

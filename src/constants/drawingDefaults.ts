@@ -22,10 +22,10 @@ export const FILL_COLORS = [
 
 export const CANVAS_COLORS = [
   "#fff",
-  "#F8BBD0",
-  "#B3E5FC",
-  "#B2DFDB",
-  "#E1BEE7",
+  " #FCE4EC",
+  "#E1F5FE",
+  "#E0F2F1",
+  "#F3E5F5",
 ];
 
 export const DEFAULT_STYLES: CanvasStyles = {

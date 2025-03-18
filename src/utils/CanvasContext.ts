@@ -6,7 +6,7 @@ import Tool from "../types/Tool";
 import CanvasOperation from "../types/CanvasOperation";
 import { makeAutoObservable } from "mobx";
 import { keyComboListener } from "./KeyComboListener";
-import KeyBindings from "../constants/hotkeys";
+import KEY_BINDINGS from "../constants/hotkeys";
 
 class CanvasContext {
   context: CanvasRenderingContext2D | null = null;
@@ -17,18 +17,18 @@ class CanvasContext {
   canvas: HTMLCanvasElement | null = null;
   scaleFactor = 1;
   definableStyles: Array<keyof CanvasStyles> = [];
-
+  canvasColor: string = "#fff";
   private undoStack: CanvasOperation[] = [];
   private redoStack: CanvasOperation[] = [];
 
   constructor() {
     makeAutoObservable(this);
-    keyComboListener.subscribe(KeyBindings.UNDO, () => this.undo());
-    keyComboListener.subscribe(KeyBindings.REDO, () => this.redo());
-    keyComboListener.subscribe(KeyBindings.ZOOM_IN, () =>
+    keyComboListener.subscribe(KEY_BINDINGS.UNDO, () => this.undo());
+    keyComboListener.subscribe(KEY_BINDINGS.REDO, () => this.redo());
+    keyComboListener.subscribe(KEY_BINDINGS.ZOOM_IN, () =>
       this.zoom(this.scaleFactor + 0.1),
     );
-    keyComboListener.subscribe(KeyBindings.ZOOM_OUT, () =>
+    keyComboListener.subscribe(KEY_BINDINGS.ZOOM_OUT, () =>
       this.zoom(this.scaleFactor - 0.1),
     );
   }
@@ -58,6 +58,23 @@ class CanvasContext {
     };
   }
 
+  clear() {
+    this.context?.clearRect(-9999, -9999, 20000, 20000);
+    this.figures = [];
+    this.canvasColor = "#fff";
+    this.setActiveTool(null);
+    this.undoStack = [];
+    this.redoStack = [];
+  }
+
+  export() {
+    if (!this.canvas) {
+      return "";
+    }
+
+    return this.canvas.toDataURL("image/png");
+  }
+
   zoom(zoom: number) {
     if (!this.context) return;
     this.context.scale(zoom / this.scaleFactor, zoom / this.scaleFactor);
@@ -76,9 +93,19 @@ class CanvasContext {
     }
   }
 
-  setActiveTool(tool: Tool) {
+  setCanvasColor(canvasColor: string) {
+    this.canvasColor = canvasColor;
+    if (this.canvas) {
+      this.canvas.style.backgroundColor = canvasColor;
+    }
+  }
+
+  setActiveTool(tool: Tool | null) {
     if (this.activeTool?.reset) {
       this.activeTool.reset();
+    }
+    if (!tool) {
+      return;
     }
     this.activeTool = tool;
     this.setDefinableStyles(tool.definableStyles);
