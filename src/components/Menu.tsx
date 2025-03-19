@@ -8,8 +8,11 @@ import HotKeysButton from "./HotKeys";
 import useConfirm from "../hooks/useConfirm";
 import { useTranslation } from "react-i18next";
 import LanguageSelect from "./LanguageSelect";
+import { useNavigate } from "react-router-dom";
+import ThemeButton from "./ThemeButton";
 
 const Menu = observer(() => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const menuRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
   const [isOpen, setIsOpen] = useState(false);
@@ -31,18 +34,25 @@ const Menu = observer(() => {
     );
   };
 
-  const newFile = () => {};
+  const navigateBack = () => {
+    navigate("/");
+  };
 
   return (
     <div className="menu-button" ref={menuRef}>
-      <button className="burger" onClick={onBurgerClicked}>
-        <div className="line" />
-        <div className="line" />
-        <div className="line" />
-      </button>
+      <div className="menu-buttons">
+        <button className="burger" onClick={onBurgerClicked}>
+          <div className="line" />
+          <div className="line" />
+          <div className="line" />
+        </button>
+        <button className="back-button" onClick={navigateBack}>
+          {t("home")}
+        </button>
+      </div>
       {isOpen && (
         <div className="menu">
-          <input className="document-title" value="document" />
+          <input className="document-title" value="New Document" />
           <div className="menu-section">
             <button className="menu-option">{t("newFile")}</button>
             <button className="menu-option">{t("openFile")}</button>
@@ -55,8 +65,10 @@ const Menu = observer(() => {
             <HotKeysButton />
           </div>
           <div className="menu-section">
+            <label>{t("language")}</label>
             <LanguageSelect />
             <label>{t("theme")}</label>
+            <ThemeButton />
           </div>
           <div className="menu-section">
             <Picker

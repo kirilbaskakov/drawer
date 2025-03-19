@@ -24,7 +24,7 @@ class KeyComboListener {
   }
 
   private handleKeyDown(event: KeyboardEvent): void {
-    event.preventDefault();
+    // event.preventDefault();
     this.pressedKeys.add(event.code);
     this.checkCombinations();
   }

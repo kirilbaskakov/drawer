@@ -23,9 +23,9 @@ const HotKeysButton = () => {
         <Modal onClose={onClose}>
           <h1 className="modal-title">{t("hotkeys")}</h1>
           <div className="hotkeys-list">
-            {KEY_BINDINGS_INFO.map(({ name, keys }) => (
+            {KEY_BINDINGS_INFO.map(({ nameKey, keys }) => (
               <>
-                <div className="hotkey-name">{name}</div>
+                <div className="hotkey-name">{t(nameKey)}</div>
                 <div>
                   {keys.map((combo) => (
                     <div className="hotkey-sequence">

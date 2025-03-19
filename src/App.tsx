@@ -1,21 +1,26 @@
-import Canvas from "./components/Canvas";
-
-import ToolSettingsPanel from "./components/ToolSettingsPanel";
-import Zoom from "./components/Zoom";
-import UndoRedo from "./components/UndoRedo";
-import Menu from "./components/Menu";
+import {
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromChildren,
+} from "react-router-dom";
+import MainPage from "./pages/MainPage";
+import CanvasPage from "./pages/CanvasPage";
 import { ConfirmationModalContextProvider } from "./store/ConfirmationModalContext";
-import ToolsMenu from "./components/ToolsMenu";
+
+const router = createBrowserRouter(
+  createRoutesFromChildren(
+    <>
+      <Route path="/" element={<MainPage />} />
+      <Route path="/:id" element={<CanvasPage />} />
+    </>,
+  ),
+);
 
 function App() {
   return (
     <ConfirmationModalContextProvider>
-      <Menu />
-      <Canvas />
-      <ToolsMenu />
-      <ToolSettingsPanel />
-      <Zoom />
-      <UndoRedo />
+      <RouterProvider router={router} />
     </ConfirmationModalContextProvider>
   );
 }

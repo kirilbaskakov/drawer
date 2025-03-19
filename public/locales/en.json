@@ -24,6 +24,7 @@
     "selectAll": "Select All",
     "copy": "Copy",
     "paste": "Paste",
-    "cut": "Cut"
+    "cut": "Cut",
+    "home": "Home"
   }
 }

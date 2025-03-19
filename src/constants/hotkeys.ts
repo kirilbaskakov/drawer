@@ -24,15 +24,15 @@ export const KEY_NAMES = {
 };
 
 export const KEY_BINDINGS_INFO = [
-  { name: "Отменить", keys: KEY_BINDINGS.UNDO },
-  { name: "Повторить", keys: KEY_BINDINGS.REDO },
-  { name: "Удалить", keys: KEY_BINDINGS.DELETE },
-  { name: "Увеличить", keys: KEY_BINDINGS.ZOOM_IN },
-  { name: "Уменьшить", keys: KEY_BINDINGS.ZOOM_OUT },
-  { name: "Выбрать все", keys: KEY_BINDINGS.SELECT_ALL },
-  { name: "Копировать", keys: KEY_BINDINGS.COPY },
-  { name: "Вставить", keys: KEY_BINDINGS.PASTE },
-  { name: "Вырезать", keys: KEY_BINDINGS.CUT },
+  { nameKey: "undo", keys: KEY_BINDINGS.UNDO },
+  { nameKey: "redo", keys: KEY_BINDINGS.REDO },
+  { nameKey: "delete", keys: KEY_BINDINGS.DELETE },
+  { nameKey: "zoomIn", keys: KEY_BINDINGS.ZOOM_IN },
+  { nameKey: "zoomOut", keys: KEY_BINDINGS.ZOOM_OUT },
+  { nameKey: "selectAll", keys: KEY_BINDINGS.SELECT_ALL },
+  { nameKey: "copy", keys: KEY_BINDINGS.COPY },
+  { nameKey: "paste", keys: KEY_BINDINGS.PASTE },
+  { nameKey: "cut", keys: KEY_BINDINGS.CUT },
 ];
 
 export default KEY_BINDINGS;

@@ -2,10 +2,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-body {
+.canvas-container {
   overflow: hidden;
+  max-width: 100vw;
+  max-height: 100vh;
 }
 
 #canvas {
@@ -13,7 +16,14 @@ body {
 }
 
 header {
-  background-color: #eee;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem 0; 
+}
+
+.logo {
+  margin-right: auto;
 }
 
 .toolbar {
@@ -100,7 +110,6 @@ header {
   background-color: #fff;
   padding: 0.5rem 0.75rem;
   width: 250px;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .menu-section {
@@ -146,6 +155,8 @@ label {
   border-radius: 8px;
   padding: 0.25rem;
   margin: 0.3rem 0;
+  background-color: white;
+  min-width: 120px;
 }
 
 .tool-button > * {
@@ -165,7 +176,6 @@ label {
 .picker-title {
   font-size: 14px;
   font-weight: 500;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .picker-items {
@@ -194,7 +204,6 @@ label {
 .zoom-value {
   margin: auto;
   vertical-align: middle;
-  font-family: Arial, Helvetica, sans-serif;
   text-align: center;
   width: 60px;
 }
@@ -244,7 +253,6 @@ label {
 .modal-title {
   font-size: 20px;
   font-weight: semibold;
-  font-family: Arial, Helvetica, sans-serif;
   text-align: center;
 }
 
@@ -253,7 +261,6 @@ label {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
 }
 
@@ -272,14 +279,12 @@ label {
   font-size: 22px;
   font-weight: semibold;
   text-align: center;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .confirmation-text {
   margin-top: 0.75rem;
   font-size: 16px;
   text-align: center;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .confirmation-buttons {
@@ -291,7 +296,6 @@ label {
 
 .confirmation-button {
   font-weight: bold;
-  font-family: Arial, Helvetica, sans-serif;
   cursor: pointer;
   padding: 0.75rem 1.5rem;
   border: none;
@@ -313,4 +317,193 @@ label {
 
 .confirmation-button.secondary:hover {
     background-color: rgba(180, 92, 250, 0.8);
+}
+
+.hero {
+  margin-top: 1rem;
+  position: relative;
+  height: 650px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 0;
+}
+
+.video-container {
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.5;
+}
+
+.hero-video {
+  object-fit: fill;
+  width: 100%;
+  height: 100%;
+} 
+
+.hero-title {
+  font-size: 56px;
+  color: black;
+  text-shadow: 0 0 15px #c5c5c5;
+  color: #812bd6;
+}
+
+.hero-button {
+  cursor: pointer;
+  margin-top: 3rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 24px;
+  padding: 1rem 2.5rem;
+  background-color: rgba(180, 92, 250);
+  color: white;
+  font-weight: bold;
+}
+
+.hero-button:hover {
+  background-color: rgba(166, 56, 255);
+}
+
+.main-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.works {
+  margin-top: 3rem;
+}
+
+.works-title {
+  font-size: 32px;
+}
+
+.search-works {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+.works-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sort-button {
+  width: 35px;
+  height: 35px;
+  padding: 0.4rem;
+  border-radius: 50%;
+}
+
+.sort-button:hover {
+  background-color: #eee;
+}
+
+.theme-button {
+  cursor: pointer;
+  position: relative;
+  width: 65px;
+  height: 28px;
+  border: 1px solid #888;
+  border-radius: 25px;
+  background-color: #b5b5b5;
+}
+
+.theme-circle {
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  border: 1px solid #888;
+  background-color: #e5e5e5;
+}
+
+.theme-circle.light {
+  left: 0;
+}
+
+.theme-circle.dark {
+  right: 0;
+}
+
+.theme-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+}
+
+.theme-icon.sun {
+  right: 5px;
+  color: #f0ec02;
+}
+
+.theme-icon.moon {
+  left: 5px;
+  color: #f0ec02;
+}
+
+.work-cards {
+  padding: 1.5rem 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.work-card {
+  cursor: pointer;
+  border:1px solid #ccc;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.work-card:hover{
+  border: 1px solid rgba(180, 92, 250);
+}
+.work-card-info {
+  border-top: 1px solid #ccc;
+  padding: 0.75rem;
+}
+
+.work-card-title {
+  font-size: 18px;
+  color: #414519;
+}
+
+.work-card-date {
+  margin-top: 0.4rem;
+  font-size: 14px;
+  color: #80868B;
+}
+
+.back-button {
+  cursor: pointer;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  padding: 0.75rem;
+  box-shadow: 0px 0px 8px 3px rgba(180, 92, 250, 0.3);
+  font-size: 14px;
+  color: #414519;
+}
+
+.back-button:hover {
+  background-color: #f8f8f8;
+}
+
+.menu-buttons {
+  display: flex;
+  gap: 1rem;
 }

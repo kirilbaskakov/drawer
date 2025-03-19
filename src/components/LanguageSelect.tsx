@@ -3,7 +3,7 @@ import languages from "../constants/languages";
 import { ChangeEventHandler } from "react";
 
 const LanguageSelect = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   const onSelect: ChangeEventHandler<HTMLSelectElement> = (e) => {
     i18n.changeLanguage(e.target.value);
@@ -11,7 +11,6 @@ const LanguageSelect = () => {
 
   return (
     <>
-      <label>{t("language")}</label>
       <select
         className="language-select"
         onChange={onSelect}
