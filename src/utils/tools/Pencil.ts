@@ -23,14 +23,16 @@ class Pencil implements Tool {
 
   handleMouseUp(e: MouseEvent) {
     this.isDrawing = false;
-    this.currentFigure?.drawLine(e.pageX, e.pageY);
+    this.currentFigure?.addPoint(e.pageX, e.pageY);
+    this.canvasContext.repaint();
   }
 
   handleMouseMove(e: MouseEvent) {
     if (!this.isDrawing) {
       return;
     }
-    this.currentFigure?.drawLine(e.pageX, e.pageY);
+    this.currentFigure?.addPoint(e.pageX, e.pageY);
+    this.canvasContext.repaint();
   }
 
   handleMouseDown(e: MouseEvent) {
@@ -40,7 +42,8 @@ class Pencil implements Tool {
     this.isDrawing = true;
     this.currentFigure = new Figure();
     this.canvasContext.addFigure(this.currentFigure);
-    this.currentFigure.beginLine(e.pageX, e.pageY);
+    this.currentFigure.beginLine();
+    this.currentFigure.addPoint(e.pageX, e.pageY);
   }
 }
 

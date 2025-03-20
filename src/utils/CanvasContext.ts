@@ -196,6 +196,7 @@ class CanvasContext {
 
   repaint() {
     this.context?.clearRect(-9999, -9999, 20000, 20000);
+    console.log(this.figures);
     this.figures.forEach((figure) => {
       figure.repaint();
     });

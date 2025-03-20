@@ -17,7 +17,7 @@ const CanvasStoreProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const id = params.id;
     if (id) {
-      setCanvasContext(new CanvasContext());
+      // setCanvasContext(new CanvasContext());
     }
   }, [params.id]);
 

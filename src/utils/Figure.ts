@@ -1,7 +1,6 @@
 import { DEFAULT_BOUDING_RECT } from "../constants/drawingDefaults";
 import { CanvasStyles } from "../types/CanvasStyles";
 import Rect from "../types/Rect";
-import Segment from "../types/Segment";
 import { canvasContext } from "./CanvasContext";
 import doRectsIntersect from "./geometry/doRectsIntersect";
 import isRectInside from "./geometry/isRectInside";
@@ -14,9 +13,7 @@ class Figure {
   styles: CanvasStyles;
 
   private offset = [0, 0];
-  private instructions: Array<[any, any]> = [];
-  private segments: Segment[] = [];
-  private segStart: [number, number] = [0, 0];
+  private lines: Array<[number, number][]> = [];
 
   constructor(isAdditional = false) {
     this.isAdditional = isAdditional;
@@ -34,32 +31,6 @@ class Figure {
     this.boundingRect.y2 += dy;
   }
 
-  beginLine(clientX: number, clientY: number) {
-    const [x, y] = this.translateClientPoint(clientX, clientY);
-    canvasContext.context?.beginPath();
-    this.instructions.push(["beginPath", []]);
-    canvasContext.context?.moveTo(x, y);
-    this.instructions.push(["moveTo", [x, y]]);
-    this.segStart = [x, y];
-    updateBoundingRect(this.boundingRect, x, y);
-  }
-
-  drawLine(clientX: number, clientY: number) {
-    const [x, y] = this.translateClientPoint(clientX, clientY);
-    canvasContext.context?.lineTo(x, y);
-    this.instructions.push(["lineTo", [x, y]]);
-    canvasContext.context?.stroke();
-    // this.instructions.push(["stroke", []]);
-    this.segments.push({
-      x1: this.segStart[0],
-      y1: this.segStart[1],
-      x2: x,
-      y2: y,
-    });
-    this.segStart = [x, y];
-    updateBoundingRect(this.boundingRect, x, y);
-  }
-
   drawEllipse({ x1, y1, x2, y2 }: Rect) {
     [x1, y1] = this.translateClientPoint(x1, y1);
     [x2, y2] = this.translateClientPoint(x2, y2);
@@ -70,7 +41,6 @@ class Figure {
     const radiusX = Math.abs(x2 - x1) / 2;
     const radiusY = Math.abs(y2 - y1) / 2;
     canvasContext.context?.beginPath();
-    this.instructions.push(["beginPath", []]);
     canvasContext.context?.ellipse(
       centerX,
       centerY,
@@ -80,14 +50,27 @@ class Figure {
       0,
       2 * Math.PI,
     );
-    this.instructions.push([
-      "ellipse",
-      [centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI],
-    ]);
+    // this.instructions.push([
+    //   "ellipse",
+    //   [centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI],
+    // ]);
     canvasContext.context?.fill();
-    this.instructions.push(["fill", []]);
     canvasContext.context?.stroke();
-    this.instructions.push(["stroke", []]);
+  }
+
+  beginLine() {
+    this.lines.push([]);
+  }
+
+  addPoint(clientX: number, clientY: number) {
+    const [x, y] = this.translateClientPoint(clientX, clientY);
+    this.lines[this.lines.length - 1].push([x, y]);
+    updateBoundingRect(this.boundingRect, x, y);
+  }
+
+  endLine() {
+    const last = this.lines[this.lines.length - 1];
+    last.push(last[0]);
   }
 
   drawRect(rect: Rect) {
@@ -100,14 +83,7 @@ class Figure {
   }
 
   drawPolygon(points: Array<[number, number]>) {
-    this.beginLine(...points[0]);
-    for (let i = 0; i < points.length; i++) {
-      this.drawLine(...points[i + 1 >= points.length ? 0 : i + 1]);
-    }
-    canvasContext.context?.fill();
-    this.instructions.push(["fill", []]);
-    canvasContext.context?.stroke();
-    this.instructions.push(["stroke", []]);
+    this.lines.push([...points, points[0]]);
   }
 
   intersectWith(clientRect: Rect) {
@@ -135,40 +111,35 @@ class Figure {
     };
   }
 
-  clearBoundingRect() {
-    const w = this.boundingRect.x2 - this.boundingRect.x1;
-    const h = this.boundingRect.y2 - this.boundingRect.y1;
-    canvasContext.context?.clearRect(
-      this.boundingRect.x1 - 5,
-      this.boundingRect.y1 - 5,
-      w + 10,
-      h + 10,
-    );
-  }
-
   setStyles(styles: Partial<CanvasStyles>) {
     this.styles = { ...this.styles, ...styles };
     this.applyStyles();
   }
 
   clear() {
-    this.clearBoundingRect();
-    this.instructions = [];
     this.boundingRect = { ...DEFAULT_BOUDING_RECT };
-    this.segments = [];
+    this.lines = [];
   }
 
   repaint() {
     canvasContext.context?.save();
     canvasContext.context?.translate(this.offset[0], this.offset[1]);
     this.applyStyles();
-    this.instructions.forEach((instruction) => {
-      canvasContext.context?.[instruction[0]](...instruction[1]);
-    });
-    canvasContext.context?.stroke();
+    for (const line of this.lines) {
+      if (!line.length) {
+        return;
+      }
+      canvasContext.context?.moveTo(line[0][0], line[0][1]);
+      for (let i = 0; i < line.length; i++) {
+        canvasContext.context?.lineTo(line[i][0], line[i][1]);
+      }
+      canvasContext.context?.stroke();
+      if (this.styles.fillStyle != "transparent") {
+        canvasContext.context?.fill();
+      }
+    }
     canvasContext.context?.restore();
   }
-
   private applyStyles() {
     if (!canvasContext.context) {
       return;
