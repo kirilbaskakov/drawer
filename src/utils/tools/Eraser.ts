@@ -23,7 +23,7 @@ class Eraser implements Tool {
     this.isErasing = false;
   }
 
-  handleMouseMove(e: MouseEvent) {
+  handleMouseMove(x: number, y: number) {
     if (!this.cursorFigure) {
       this.cursorFigure = new Figure(true);
       this.cursorFigure.setStyles({
@@ -33,7 +33,7 @@ class Eraser implements Tool {
       });
       this.canvasContext.addFigure(this.cursorFigure);
     }
-    const position = [e.pageX, e.pageY];
+    const position = [x, y];
     const rect: Rect = {
       x1: position[0] - this.size / 2,
       y1: position[1] - this.size / 2,
@@ -41,7 +41,7 @@ class Eraser implements Tool {
       y2: position[1] + this.size / 2,
     };
     this.cursorFigure.clear();
-    this.cursorFigure.drawRect(rect);
+    this.cursorFigure.addRect(rect);
     this.canvasContext.repaint();
     if (!this.isErasing) {
       return;

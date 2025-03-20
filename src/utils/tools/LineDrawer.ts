@@ -23,17 +23,18 @@ class LineDrawer implements Tool {
 
   handleMouseUp() {}
 
-  handleMouseMove(e: MouseEvent) {
+  handleMouseMove(x: number, y: number) {
     if (!this.lineStart || !this.currentFigure) {
       return;
     }
     this.currentFigure.clear();
-    this.currentFigure.beginLine(...this.lineStart);
-    this.currentFigure.drawLine(e.pageX, e.pageY);
+    this.currentFigure.beginCurve();
+    this.currentFigure.addPoint(...this.lineStart);
+    this.currentFigure.addPoint(x, y);
     this.canvasContext.repaint();
   }
 
-  handleMouseDown(e: MouseEvent) {
+  handleMouseDown(x: number, y: number) {
     if (!this.canvasContext.context) {
       return;
     }
@@ -42,11 +43,11 @@ class LineDrawer implements Tool {
       this.currentFigure = null;
       return;
     }
-    this.lineStart = [e.pageX, e.pageY];
+    this.lineStart = [x, y];
     this.currentFigure = new Figure();
     this.canvasContext.addFigure(this.currentFigure);
-    this.currentFigure.beginLine(e.pageX, e.pageY);
-    this.currentFigure.drawLine(e.pageX, e.pageY);
+    this.currentFigure.beginCurve();
+    this.currentFigure.addPoint(x, y);
   }
 }
 

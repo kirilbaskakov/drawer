@@ -22,18 +22,14 @@ class Hand implements Tool {
     }
   }
 
-  handleMouseMove(e: MouseEvent) {
+  handleMouseMove(x: number, y: number) {
     if (this.position) {
-      this.canvasContext.translate(
-        (e.pageX - this.position[0]) / this.canvasContext.scaleFactor,
-        (e.pageY - this.position[1]) / this.canvasContext.scaleFactor,
-      );
-      this.position = [e.pageX, e.pageY];
+      this.canvasContext.translate(x - this.position[0], y - this.position[1]);
     }
   }
 
-  handleMouseDown(e: MouseEvent) {
-    this.position = [e.pageX, e.pageY];
+  handleMouseDown(x: number, y: number) {
+    this.position = [x, y];
     if (this.canvasContext.canvas) {
       this.canvasContext.canvas.style.cursor = "grabbing";
     }

@@ -27,25 +27,25 @@ class RectangleDrawer implements Tool {
     this.currentFigure = null;
   }
 
-  handleMouseMove(e: MouseEvent) {
+  handleMouseMove(x: number, y: number) {
     if (!this.rectStart || !this.currentFigure) {
       return;
     }
     this.currentFigure.clear();
-    this.currentFigure.drawRect({
+    this.currentFigure.addRect({
       x1: this.rectStart[0],
       y1: this.rectStart[1],
-      x2: e.pageX,
-      y2: e.pageY,
+      x2: x,
+      y2: y,
     });
     this.canvasContext.repaint();
   }
 
-  handleMouseDown(e: MouseEvent) {
+  handleMouseDown(x: number, y: number) {
     if (!this.canvasContext.context) {
       return;
     }
-    this.rectStart = [e.pageX, e.pageY];
+    this.rectStart = [x, y];
     this.currentFigure = new Figure();
     this.canvasContext.addFigure(this.currentFigure);
   }

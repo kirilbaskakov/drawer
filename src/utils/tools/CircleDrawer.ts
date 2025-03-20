@@ -27,25 +27,25 @@ class CircleDrawer implements Tool {
     this.currentFigure = null;
   }
 
-  handleMouseMove(e: MouseEvent) {
+  handleMouseMove(x: number, y: number) {
     if (!this.circleStart || !this.currentFigure) {
       return;
     }
     this.currentFigure.clear();
-    this.currentFigure.drawEllipse({
+    this.currentFigure.addEllipse({
       x1: this.circleStart[0],
       y1: this.circleStart[1],
-      x2: e.pageX,
-      y2: e.pageY,
+      x2: x,
+      y2: y,
     });
     this.canvasContext.repaint();
   }
 
-  handleMouseDown(e: MouseEvent) {
+  handleMouseDown(x: number, y: number) {
     if (!this.canvasContext.context) {
       return;
     }
-    this.circleStart = [e.pageX, e.pageY];
+    this.circleStart = [x, y];
     this.currentFigure = new Figure();
     this.canvasContext.addFigure(this.currentFigure);
   }

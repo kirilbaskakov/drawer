@@ -63,13 +63,13 @@ class Select implements Tool {
     }
   }
 
-  handleMouseMove(e: MouseEvent) {
+  handleMouseMove(x: number, y: number) {
     if (!this.selectedRects || !this.canvasContext.canvas) {
       return;
     }
     if (!this.isSelecting) {
-      const point = { x: e.pageX, y: e.pageY };
-      const bRect = this.selectedRects.getClientBoundingRect();
+      const point = { x, y };
+      const bRect = this.selectedRects.boundingRect;
       const inner = addPadding(bRect, -5, -5);
       const borderLeft = addPadding(
         {
@@ -175,13 +175,12 @@ class Select implements Tool {
         this.canvasContext.canvas.style.cursor = "default";
       }
       if (this.position) {
-        const dx =
-            (e.pageX - this.position[0]) / this.canvasContext.scaleFactor,
-          dy = (e.pageY - this.position[1]) / this.canvasContext.scaleFactor;
+        const dx = x - this.position[0],
+          dy = y - this.position[1];
         this.currDx += dx;
         this.currDy += dy;
         this.selectedFigures.forEach((figure) => figure.translate(dx, dy));
-        this.position = [e.pageX, e.pageY];
+        this.position = [x, y];
         this.selectedRects.translate(dx, dy);
         this.canvasContext.repaint();
       }
@@ -194,10 +193,10 @@ class Select implements Tool {
     const rect: Rect = {
       x1: this.position[0],
       y1: this.position[1],
-      x2: e.pageX,
-      y2: e.pageY,
+      x2: x,
+      y2: y,
     };
-    this.selectionRect.drawRect(rect);
+    this.selectionRect.addRect(rect);
     this.selectedFigures = this.canvasContext
       .selectFiguresInRect(rect)
       .filter(
@@ -220,14 +219,11 @@ class Select implements Tool {
     this.canvasContext.repaint();
   }
 
-  handleMouseDown(e: MouseEvent) {
-    this.position = [e.pageX, e.pageY];
+  handleMouseDown(x: number, y: number) {
+    this.position = [x, y];
     if (
       this.selectedRects &&
-      isPointInRect(
-        { x: e.pageX, y: e.pageY },
-        this.selectedRects.getClientBoundingRect(),
-      )
+      isPointInRect({ x, y }, this.selectedRects.boundingRect)
     ) {
       this.isSelecting = false;
       return;
@@ -284,11 +280,9 @@ class Select implements Tool {
     }
     this.selectedRects.clear();
     this.selectedFigures.forEach((figure) =>
-      this.selectedRects?.drawRect(
-        addPadding(figure.getClientBoundingRect(), 5, 5),
-      ),
+      this.selectedRects?.addRect(addPadding(figure.boundingRect, 5, 5)),
     );
-    this.selectedRects?.drawRect(this.selectedRects.getClientBoundingRect());
+    this.selectedRects?.addRect(this.selectedRects.boundingRect);
   }
 }
 

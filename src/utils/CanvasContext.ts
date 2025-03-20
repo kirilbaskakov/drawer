@@ -43,22 +43,26 @@ class CanvasContext {
     this.canvas = canvas;
     canvas.onmouseup = (e) => {
       if (this.activeTool) {
-        this.activeTool.handleMouseUp(e);
+        const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
+        this.activeTool.handleMouseUp(x, y);
       }
     };
     canvas.onmousemove = (e) => {
       if (this.activeTool) {
-        this.activeTool.handleMouseMove(e);
+        const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
+        this.activeTool.handleMouseMove(x, y);
       }
     };
     canvas.onmousedown = (e) => {
       if (this.activeTool) {
-        this.activeTool.handleMouseDown(e);
+        const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
+        this.activeTool.handleMouseDown(x, y);
       }
     };
     canvas.onmouseleave = (e) => {
       if (this.activeTool?.handleMouseLeave) {
-        this.activeTool.handleMouseLeave(e);
+        const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
+        this.activeTool.handleMouseLeave(x, y);
       }
     };
   }
@@ -196,9 +200,8 @@ class CanvasContext {
 
   repaint() {
     this.context?.clearRect(-9999, -9999, 20000, 20000);
-    console.log(this.figures);
     this.figures.forEach((figure) => {
-      figure.repaint();
+      figure.paint();
     });
   }
 
@@ -246,9 +249,16 @@ class CanvasContext {
   }
 
   private _deleteFigure(figure: Figure) {
-    figure.clearBoundingRect();
     this.figures = this.figures.filter((fig) => fig !== figure);
     this.repaint();
+  }
+
+  private translateClientPoint(clientX: number, clientY: number) {
+    clientX -= this.offset[0];
+    clientY -= this.offset[1];
+    clientX /= this.scaleFactor;
+    clientY /= this.scaleFactor;
+    return [clientX, clientY];
   }
 }
 
