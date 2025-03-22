@@ -1,10 +1,10 @@
-import { useState } from "react";
 import CanvasContext from "../utils/CanvasContext";
 import Tool from "../types/Tool";
 import ToolButton from "./ToolButton";
 import { FaRegHandPaper, FaPencilAlt } from "react-icons/fa";
 import { PiCursor, PiEraser, PiRectangle, PiCircle } from "react-icons/pi";
 import { TfiLayoutLineSolid } from "react-icons/tfi";
+import { AiOutlinePicture } from "react-icons/ai";
 import Hand from "../utils/tools/Hand";
 import Select from "../utils/tools/Select";
 import Pencil from "../utils/tools/Pencil";
@@ -12,7 +12,9 @@ import LineDrawer from "../utils/tools/LineDrawer";
 import RectangleDrawer from "../utils/tools/RectangleDrawer";
 import CircleDrawer from "../utils/tools/CircleDrawer";
 import Eraser from "../utils/tools/Eraser";
+import ImageTool from "../utils/tools/ImageTool";
 import useCanvasContext from "../hooks/useCanvasContext";
+import { observer } from "mobx-react-lite";
 
 const menu = [
   {
@@ -40,19 +42,21 @@ const menu = [
     tool: CircleDrawer,
   },
   {
+    icon: <AiOutlinePicture />,
+    tool: ImageTool,
+  },
+  {
     icon: <PiEraser />,
     tool: Eraser,
   },
 ];
 
-const ToolsMenu = () => {
+const ToolsMenu = observer(() => {
   const { canvasContext } = useCanvasContext();
-  const [activeTool, setActiveTool] = useState<null | Tool>(null);
 
   const onToolButtonClick =
     (tool: new (canvasContext: CanvasContext) => Tool) => () => {
       const newTool = new tool(canvasContext);
-      setActiveTool(newTool);
       canvasContext.setActiveTool(newTool);
     };
 
@@ -62,12 +66,12 @@ const ToolsMenu = () => {
         <ToolButton
           key={index}
           icon={icon}
-          isActive={activeTool instanceof tool}
+          isActive={canvasContext.activeTool instanceof tool}
           onClick={onToolButtonClick(tool)}
         />
       ))}
     </div>
   );
-};
+});
 
 export default ToolsMenu;

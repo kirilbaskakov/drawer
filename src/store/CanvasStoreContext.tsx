@@ -19,8 +19,9 @@ const CanvasStoreProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const id = params.id;
     let intervalId = null;
+    let canvas: CanvasContext | null = null;
     if (id) {
-      const canvas = getCanvas(id) ?? new CanvasContext();
+      canvas = getCanvas(id) ?? new CanvasContext();
       intervalId = setInterval(() => {
         if (canvas && id) {
           saveCanvas(canvas, id);
@@ -33,6 +34,7 @@ const CanvasStoreProvider = ({ children }: { children: ReactNode }) => {
       if (intervalId) {
         clearInterval(intervalId);
       }
+      canvas?.delete();
     };
   }, [params.id]);
 

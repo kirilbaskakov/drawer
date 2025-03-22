@@ -31,15 +31,17 @@ class CanvasContext {
 
   constructor() {
     makeAutoObservable(this);
-    keyComboListener.subscribe(KEY_BINDINGS.UNDO, () => this.undo());
-    keyComboListener.subscribe(KEY_BINDINGS.REDO, () => this.redo());
-    keyComboListener.subscribe(KEY_BINDINGS.ZOOM_IN, () =>
-      this.zoom(this.scaleFactor + 0.1),
-    );
-    keyComboListener.subscribe(KEY_BINDINGS.ZOOM_OUT, () =>
-      this.zoom(this.scaleFactor - 0.1),
-    );
-    keyComboListener.subscribe(KEY_BINDINGS.PASTE, () => this.paste());
+    this.undo = this.undo.bind(this);
+    this.redo = this.redo.bind(this);
+    this.zoomIn = this.zoomIn.bind(this);
+    this.zoomOut = this.zoomOut.bind(this);
+    this.paste = this.paste.bind(this);
+
+    keyComboListener.subscribe(KEY_BINDINGS.UNDO, this.undo);
+    keyComboListener.subscribe(KEY_BINDINGS.REDO, this.redo);
+    keyComboListener.subscribe(KEY_BINDINGS.ZOOM_IN, this.zoomIn);
+    keyComboListener.subscribe(KEY_BINDINGS.ZOOM_OUT, this.zoomOut);
+    keyComboListener.subscribe(KEY_BINDINGS.PASTE, this.paste);
   }
 
   connectCanvas(canvas: HTMLCanvasElement) {
@@ -82,6 +84,14 @@ class CanvasContext {
     this.redoStack = [];
   }
 
+  delete() {
+    keyComboListener.unsubscribe(this.undo);
+    keyComboListener.unsubscribe(this.redo);
+    keyComboListener.unsubscribe(this.zoomIn);
+    keyComboListener.unsubscribe(this.zoomOut);
+    keyComboListener.unsubscribe(this.paste);
+  }
+
   export() {
     if (!this.canvas || !this.context) {
       return "";
@@ -112,6 +122,14 @@ class CanvasContext {
     this.zoom(zoom);
     this.translate(offset[0], offset[1]);
     return data;
+  }
+
+  zoomIn() {
+    this.zoom(this.scaleFactor + 0.1);
+  }
+
+  zoomOut() {
+    this.zoom(this.scaleFactor - 0.1);
   }
 
   zoom(zoom: number) {
@@ -204,6 +222,12 @@ class CanvasContext {
     this.repaint();
   }
 
+  select(figures: Figure[]) {
+    const select = new Select(this);
+    this.setActiveTool(select);
+    select.select(figures);
+  }
+
   repaint() {
     if (!this.context) {
       return;
@@ -254,8 +278,31 @@ class CanvasContext {
   }
 
   async paste() {
+    const items = await navigator.clipboard.read();
+    for (const item of items) {
+      const imageType = item.types.find((type) => type.startsWith("image"));
+      if (imageType) {
+        const blob = await item.getType(imageType);
+        const url = URL.createObjectURL(blob);
+        const image = new Image();
+        image.onload = () => {
+          const figure = new Figure();
+          figure.addImage(
+            image,
+            this.lastCursorPosition[0] - image.width / 2,
+            this.lastCursorPosition[1] - image.height / 2,
+          );
+          this.addFigure(figure);
+          this.select([figure]);
+        };
+        image.src = url;
+        return;
+      }
+    }
+
     const json = await navigator.clipboard.readText();
     const obj = JSON.parse(json);
+
     if (!obj || !obj.figures) {
       return;
     }
@@ -286,9 +333,7 @@ class CanvasContext {
     const translateX = this.lastCursorPosition[0] - boundingRect.x1 - w / 2;
     const translateY = this.lastCursorPosition[1] - boundingRect.y1 - h / 2;
     figures.forEach((figure) => figure.translate(translateX, translateY));
-    const select = new Select(this);
-    this.setActiveTool(select);
-    select.select(figures);
+    this.select(figures);
     this.addOperation({
       apply: () => figures.forEach((figure) => this._addFigure(figure)),
       rollback: () => figures.forEach((figure) => this._deleteFigure(figure)),
@@ -298,7 +343,9 @@ class CanvasContext {
   }
 
   toJSON() {
-    const figuresJSON = this.figures.map((figure) => figure.toJSON());
+    const figuresJSON = this.figures
+      .filter((figure) => !figure.isAdditional)
+      .map((figure) => figure.toJSON());
     return JSON.stringify({
       figures: figuresJSON,
       canvasColor: this.canvasColor,

@@ -20,7 +20,17 @@ interface CurvePrimitive {
   points: Array<[number, number]>;
 }
 
-type Primitive = EllipsePrimitive | CurvePrimitive;
+interface ImagePrimitive {
+  type: "image";
+  x: number;
+  y: number;
+  image: HTMLImageElement | null;
+  src: string;
+  scale: [number, number];
+  translate: [number, number];
+}
+
+type Primitive = EllipsePrimitive | CurvePrimitive | ImagePrimitive;
 
 class Figure {
   id: number;
@@ -52,6 +62,10 @@ class Figure {
           primitive.center[0] += dx;
           primitive.center[1] += dy;
           break;
+        case "image":
+          primitive.translate[0] += dx;
+          primitive.translate[1] += dy;
+          break;
       }
     }
   }
@@ -76,6 +90,11 @@ class Figure {
           primitive.radius[0] *= scaleX;
           primitive.radius[1] *= scaleY;
           break;
+        case "image":
+          primitive.scale[0] *= scaleX;
+          primitive.scale[1] *= scaleY;
+          primitive.translate[0] *= scaleX;
+          primitive.translate[1] *= scaleY;
       }
     }
     switch (scaleType) {
@@ -165,6 +184,20 @@ class Figure {
     this.closeCurve();
   }
 
+  addImage(image: HTMLImageElement, x: number, y: number) {
+    this.primitives.push({
+      type: "image",
+      src: image.src,
+      image: null,
+      x,
+      y,
+      scale: [1, 1],
+      translate: [0, 0],
+    });
+    updateBoundingRect(this.boundingRect, x, y);
+    updateBoundingRect(this.boundingRect, x + image.width, y + image.height);
+  }
+
   intersectWith(rect: Rect) {
     return doRectsIntersect(rect, this.boundingRect);
   }
@@ -191,6 +224,9 @@ class Figure {
           break;
         case "ellipse":
           this.drawEllipse(context, primitive);
+          break;
+        case "image":
+          this.drawImage(context, primitive);
           break;
       }
     }
@@ -244,6 +280,32 @@ class Figure {
     context.stroke();
     if (this.styles.fillStyle != "transparent") {
       context?.fill();
+    }
+  }
+
+  private drawImage(context: CanvasRenderingContext2D, image: ImagePrimitive) {
+    if (image.image?.src) {
+      context.save();
+      context.scale(image.scale[0], image.scale[1]);
+      context.translate(
+        image.translate[0] / image.scale[0],
+        image.translate[1] / image.scale[1],
+      );
+      context.drawImage(image.image, image.x, image.y);
+      context.restore();
+    } else {
+      image.image = new Image();
+      image.image.onload = () => {
+        context.save();
+        context.scale(image.scale[0], image.scale[1]);
+        context.translate(
+          image.translate[0] / image.scale[0],
+          image.translate[1] / image.scale[1],
+        );
+        context.drawImage(image.image!, image.x, image.y);
+        context.restore();
+      };
+      image.image.src = image.src;
     }
   }
 }
