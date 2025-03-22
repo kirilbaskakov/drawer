@@ -1,56 +1,60 @@
 import { useState } from "react";
-import { canvasContext } from "../utils/CanvasContext";
+import CanvasContext from "../utils/CanvasContext";
 import Tool from "../types/Tool";
 import ToolButton from "./ToolButton";
 import { FaRegHandPaper, FaPencilAlt } from "react-icons/fa";
 import { PiCursor, PiEraser, PiRectangle, PiCircle } from "react-icons/pi";
 import { TfiLayoutLineSolid } from "react-icons/tfi";
-import { hand } from "../utils/tools/Hand";
-import { select } from "../utils/tools/Select";
-import { pencil } from "../utils/tools/Pencil";
-import { lineDrawer } from "../utils/tools/LineDrawer";
-import { rectangleDrawer } from "../utils/tools/RectangleDrawer";
-import { circleDrawer } from "../utils/tools/CircleDrawer";
-import { eraser } from "../utils/tools/Eraser";
+import Hand from "../utils/tools/Hand";
+import Select from "../utils/tools/Select";
+import Pencil from "../utils/tools/Pencil";
+import LineDrawer from "../utils/tools/LineDrawer";
+import RectangleDrawer from "../utils/tools/RectangleDrawer";
+import CircleDrawer from "../utils/tools/CircleDrawer";
+import Eraser from "../utils/tools/Eraser";
+import useCanvasContext from "../hooks/useCanvasContext";
 
 const menu = [
   {
     icon: <FaRegHandPaper />,
-    tool: hand,
+    tool: Hand,
   },
   {
     icon: <PiCursor />,
-    tool: select,
+    tool: Select,
   },
   {
     icon: <FaPencilAlt />,
-    tool: pencil,
+    tool: Pencil,
   },
   {
     icon: <TfiLayoutLineSolid />,
-    tool: lineDrawer,
+    tool: LineDrawer,
   },
   {
     icon: <PiRectangle />,
-    tool: rectangleDrawer,
+    tool: RectangleDrawer,
   },
   {
     icon: <PiCircle />,
-    tool: circleDrawer,
+    tool: CircleDrawer,
   },
   {
     icon: <PiEraser />,
-    tool: eraser,
+    tool: Eraser,
   },
 ];
 
 const ToolsMenu = () => {
+  const { canvasContext } = useCanvasContext();
   const [activeTool, setActiveTool] = useState<null | Tool>(null);
 
-  const onToolButtonClick = (tool: Tool) => () => {
-    setActiveTool(tool);
-    canvasContext.setActiveTool(tool);
-  };
+  const onToolButtonClick =
+    (tool: new (canvasContext: CanvasContext) => Tool) => () => {
+      const newTool = new tool(canvasContext);
+      setActiveTool(newTool);
+      canvasContext.setActiveTool(newTool);
+    };
 
   return (
     <div className="toolbar toolbar-top-center row">
@@ -58,7 +62,7 @@ const ToolsMenu = () => {
         <ToolButton
           key={index}
           icon={icon}
-          isActive={activeTool === tool}
+          isActive={activeTool instanceof tool}
           onClick={onToolButtonClick(tool)}
         />
       ))}

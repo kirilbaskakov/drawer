@@ -1,4 +1,4 @@
-import CanvasContext, { canvasContext } from "../CanvasContext";
+import CanvasContext from "../CanvasContext";
 import Figure from "../Figure";
 import throttle from "../throttle";
 import Tool from "../../types/Tool";
@@ -48,9 +48,8 @@ class RectangleDrawer implements Tool {
     this.rectStart = [x, y];
     this.currentFigure = new Figure();
     this.canvasContext.addFigure(this.currentFigure);
+    this.currentFigure.setStyles(this.canvasContext.styles);
   }
 }
-
-export const rectangleDrawer = new RectangleDrawer(canvasContext);
 
 export default RectangleDrawer;

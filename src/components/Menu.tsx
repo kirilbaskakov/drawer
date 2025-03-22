@@ -3,17 +3,18 @@ import Picker from "./Picker";
 import { CANVAS_COLORS } from "../constants/drawingDefaults";
 import useClickOutside from "../hooks/useClickOutside";
 import { observer } from "mobx-react-lite";
-import { canvasContext } from "../utils/CanvasContext";
 import HotKeysButton from "./HotKeys";
 import useConfirm from "../hooks/useConfirm";
 import { useTranslation } from "react-i18next";
 import LanguageSelect from "./LanguageSelect";
 import { useNavigate } from "react-router-dom";
 import ThemeButton from "./ThemeButton";
+import useCanvasContext from "../hooks/useCanvasContext";
 
 const Menu = observer(() => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { canvasContext } = useCanvasContext();
   const menuRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
   const [isOpen, setIsOpen] = useState(false);
   const { showModal } = useConfirm();

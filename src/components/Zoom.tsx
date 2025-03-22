@@ -1,7 +1,9 @@
-import { canvasContext } from "../utils/CanvasContext";
 import { observer } from "mobx-react-lite";
+import useCanvasContext from "../hooks/useCanvasContext";
 
 const Zoom = observer(() => {
+  const { canvasContext } = useCanvasContext();
+
   const updateZoom = (delta: number) => () => {
     const newZoom = canvasContext.scaleFactor + delta;
     if (newZoom > 0.05 && newZoom <= 30) {

@@ -1,4 +1,4 @@
-import CanvasContext, { canvasContext } from "../CanvasContext";
+import CanvasContext from "../CanvasContext";
 import throttle from "../throttle";
 import Tool from "../../types/Tool";
 import { CanvasStyles } from "../../types/CanvasStyles";
@@ -35,7 +35,5 @@ class Hand implements Tool {
     }
   }
 }
-
-export const hand = new Hand(canvasContext);
 
 export default Hand;

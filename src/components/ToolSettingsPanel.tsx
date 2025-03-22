@@ -1,6 +1,5 @@
 import Picker from "./Picker";
 import "../index.css";
-import { canvasContext } from "../utils/CanvasContext";
 import {
   FILL_COLORS,
   LINE_DASH,
@@ -9,9 +8,11 @@ import {
 } from "../constants/drawingDefaults";
 import { observer } from "mobx-react-lite";
 import { useTranslation } from "react-i18next";
+import useCanvasContext from "../hooks/useCanvasContext";
 
 const ToolSettingsPanel = observer(() => {
   const { t } = useTranslation();
+  const { canvasContext } = useCanvasContext();
 
   const updateOptions = (optionName: string) => (value: unknown) => {
     canvasContext.setStyles({ [optionName]: value });

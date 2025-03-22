@@ -1,4 +1,4 @@
-import CanvasContext, { canvasContext } from "../CanvasContext";
+import CanvasContext from "../CanvasContext";
 import Figure from "../Figure";
 import throttle from "../throttle";
 import Tool from "../../types/Tool";
@@ -47,10 +47,9 @@ class CircleDrawer implements Tool {
     }
     this.circleStart = [x, y];
     this.currentFigure = new Figure();
+    this.currentFigure.setStyles(this.canvasContext.styles);
     this.canvasContext.addFigure(this.currentFigure);
   }
 }
-
-export const circleDrawer = new CircleDrawer(canvasContext);
 
 export default CircleDrawer;

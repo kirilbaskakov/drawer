@@ -1,4 +1,4 @@
-import CanvasContext, { canvasContext } from "../CanvasContext";
+import CanvasContext from "../CanvasContext";
 import Figure from "../Figure";
 import Tool from "../../types/Tool";
 import throttle from "../throttle";
@@ -42,11 +42,10 @@ class Pencil implements Tool {
     this.isDrawing = true;
     this.currentFigure = new Figure();
     this.canvasContext.addFigure(this.currentFigure);
+    this.currentFigure.setStyles(this.canvasContext.styles);
     this.currentFigure.beginCurve();
     this.currentFigure.addPoint(x, y);
   }
 }
-
-export const pencil = new Pencil(canvasContext);
 
 export default Pencil;

@@ -1,4 +1,4 @@
-import CanvasContext, { canvasContext } from "../CanvasContext";
+import CanvasContext from "../CanvasContext";
 import Figure from "../Figure";
 import throttle from "../throttle";
 import Tool from "../../types/Tool";
@@ -46,11 +46,10 @@ class LineDrawer implements Tool {
     this.lineStart = [x, y];
     this.currentFigure = new Figure();
     this.canvasContext.addFigure(this.currentFigure);
+    this.currentFigure.setStyles(this.canvasContext.styles);
     this.currentFigure.beginCurve();
     this.currentFigure.addPoint(x, y);
   }
 }
-
-export const lineDrawer = new LineDrawer(canvasContext);
 
 export default LineDrawer;

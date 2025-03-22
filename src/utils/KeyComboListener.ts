@@ -17,7 +17,7 @@ class KeyComboListener {
     window.addEventListener("keyup", this.handleKeyUp);
   }
 
-  public subscribe(combos: KeyCombo[], callback?: () => void): void {
+  public subscribe(combos: KeyCombo[], callback: () => void): void {
     for (const combo of combos) {
       this.combinations.push({ combo, callback: callback! });
     }
@@ -34,20 +34,25 @@ class KeyComboListener {
   }
 
   private checkCombinations(): void {
+    let longestCombo: (() => void) | null = null,
+      comboLength = 0;
     for (const { combo, callback } of this.combinations) {
       if (
-        combo.length === this.pressedKeys.size &&
+        combo.length > comboLength &&
         combo.every((key) => this.pressedKeys.has(key))
       ) {
-        callback();
+        longestCombo = callback;
+        comboLength = combo.length;
         break;
       }
     }
+    longestCombo?.();
   }
 
-  public unsubscribe(): void {
-    window.removeEventListener("keydown", this.handleKeyDown);
-    window.removeEventListener("keyup", this.handleKeyUp);
+  public unsubscribe(callback: () => void): void {
+    this.combinations = this.combinations.filter(
+      ({ callback: cb }) => callback != cb,
+    );
   }
 }
 

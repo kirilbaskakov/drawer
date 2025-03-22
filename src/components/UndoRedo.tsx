@@ -1,8 +1,10 @@
 import { GrUndo, GrRedo } from "react-icons/gr";
-import { canvasContext } from "../utils/CanvasContext";
 import { observer } from "mobx-react-lite";
+import useCanvasContext from "../hooks/useCanvasContext";
 
 const UndoRedo = observer(() => {
+  const { canvasContext } = useCanvasContext();
+
   const onUndoClick = () => {
     canvasContext.undo();
   };

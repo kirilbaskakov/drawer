@@ -1,7 +1,10 @@
-import { DEFAULT_BOUDING_RECT } from "../constants/drawingDefaults";
+import {
+  DEFAULT_BOUDING_RECT,
+  DEFAULT_STYLES,
+} from "../constants/drawingDefaults";
 import { CanvasStyles } from "../types/CanvasStyles";
 import Rect from "../types/Rect";
-import { canvasContext } from "./CanvasContext";
+import ScaleType from "../types/ScaleType";
 import doRectsIntersect from "./geometry/doRectsIntersect";
 import isRectInside from "./geometry/isRectInside";
 import updateBoundingRect from "./geometry/updateBoundingRect";
@@ -23,25 +26,88 @@ class Figure {
   id: number;
   isAdditional = false;
   boundingRect: Rect = { ...DEFAULT_BOUDING_RECT };
-  styles: CanvasStyles;
+  styles: CanvasStyles = DEFAULT_STYLES;
 
-  private offset = [0, 0];
   private primitives: Array<Primitive> = [];
 
   constructor(isAdditional = false) {
     this.isAdditional = isAdditional;
     this.id = +new Date();
-    this.styles = { ...canvasContext.styles };
-    this.applyStyles();
   }
 
   translate(dx: number, dy: number) {
-    this.offset[0] += dx;
-    this.offset[1] += dy;
     this.boundingRect.x1 += dx;
     this.boundingRect.x2 += dx;
     this.boundingRect.y1 += dy;
     this.boundingRect.y2 += dy;
+    for (const primitive of this.primitives) {
+      switch (primitive.type) {
+        case "curve":
+          for (const point of primitive.points) {
+            point[0] += dx;
+            point[1] += dy;
+          }
+          break;
+        case "ellipse":
+          primitive.center[0] += dx;
+          primitive.center[1] += dy;
+          break;
+      }
+    }
+  }
+
+  scale(scaleX: number, scaleY: number, scaleType: ScaleType = "nw-resize") {
+    const prevBoundingRect = { ...this.boundingRect };
+    this.boundingRect.x1 *= scaleX;
+    this.boundingRect.x2 *= scaleX;
+    this.boundingRect.y1 *= scaleY;
+    this.boundingRect.y2 *= scaleY;
+    for (const primitive of this.primitives) {
+      switch (primitive.type) {
+        case "curve":
+          for (const point of primitive.points) {
+            point[0] *= scaleX;
+            point[1] *= scaleY;
+          }
+          break;
+        case "ellipse":
+          primitive.center[0] *= scaleX;
+          primitive.center[1] *= scaleY;
+          primitive.radius[0] *= scaleX;
+          primitive.radius[1] *= scaleY;
+          break;
+      }
+    }
+    switch (scaleType) {
+      case "nw-resize":
+      case "w-resize":
+      case "n-resize":
+        this.translate(
+          prevBoundingRect.x1 - this.boundingRect.x1,
+          prevBoundingRect.y1 - this.boundingRect.y1,
+        );
+        break;
+      case "se-resize":
+      case "s-resize":
+      case "e-resize":
+        this.translate(
+          prevBoundingRect.x2 - this.boundingRect.x2,
+          prevBoundingRect.y2 - this.boundingRect.y2,
+        );
+        break;
+      case "ne-resize":
+        this.translate(
+          prevBoundingRect.x1 - this.boundingRect.x1,
+          prevBoundingRect.y2 - this.boundingRect.y2,
+        );
+        break;
+      case "sw-resize":
+        this.translate(
+          prevBoundingRect.x2 - this.boundingRect.x2,
+          prevBoundingRect.y1 - this.boundingRect.y1,
+        );
+        break;
+    }
   }
 
   addEllipse({ x1, y1, x2, y2 }: Rect) {
@@ -79,7 +145,7 @@ class Figure {
     if (curve.type != "curve") {
       return;
     }
-    curve.points.push(curve.points[0]);
+    curve.points.push([...curve.points[0]]);
   }
 
   addRect(rect: Rect) {
@@ -109,7 +175,6 @@ class Figure {
 
   setStyles(styles: Partial<CanvasStyles>) {
     this.styles = { ...this.styles, ...styles };
-    this.applyStyles();
   }
 
   clear() {
@@ -117,59 +182,68 @@ class Figure {
     this.primitives = [];
   }
 
-  paint() {
-    canvasContext.context?.save();
-    canvasContext.context?.translate(this.offset[0], this.offset[1]);
-    this.applyStyles();
+  paint(context: CanvasRenderingContext2D) {
+    this.applyStyles(context);
     for (const primitive of this.primitives) {
       switch (primitive.type) {
         case "curve":
-          this.drawCurve(primitive);
+          this.drawCurve(context, primitive);
           break;
         case "ellipse":
-          this.drawEllipse(primitive);
+          this.drawEllipse(context, primitive);
           break;
       }
     }
-    canvasContext.context?.restore();
-  }
-  private applyStyles() {
-    if (!canvasContext.context) {
-      return;
-    }
-    canvasContext.context.strokeStyle = this.styles.strokeStyle;
-    canvasContext.context.lineWidth = this.styles.lineWidth;
-    canvasContext.context.setLineDash(this.styles.lineDash);
-    canvasContext.context.fillStyle = this.styles.fillStyle;
   }
 
-  private drawEllipse(ellipse: EllipsePrimitive) {
-    canvasContext.context?.beginPath();
-    canvasContext.context?.ellipse(
-      ...ellipse.center,
-      ...ellipse.radius,
-      0,
-      0,
-      2 * Math.PI,
-    );
-    canvasContext.context?.stroke();
+  toJSON() {
+    return JSON.stringify({
+      primitives: this.primitives,
+      boundingRect: this.boundingRect,
+    });
+  }
+
+  static fromJSON(jsonString: string) {
+    const parsedObject = JSON.parse(jsonString);
+    if (parsedObject.primitives && parsedObject.boundingRect) {
+      const figure = new Figure();
+      figure.primitives = parsedObject.primitives as Primitive[];
+      figure.boundingRect = parsedObject.boundingRect as Rect;
+      return figure;
+    }
+  }
+
+  private applyStyles(context: CanvasRenderingContext2D) {
+    context.strokeStyle = this.styles.strokeStyle;
+    context.lineWidth = this.styles.lineWidth;
+    context.setLineDash(this.styles.lineDash);
+    context.fillStyle = this.styles.fillStyle;
+  }
+
+  private drawEllipse(
+    context: CanvasRenderingContext2D,
+    ellipse: EllipsePrimitive,
+  ) {
+    context.beginPath();
+    context.ellipse(...ellipse.center, ...ellipse.radius, 0, 0, 2 * Math.PI);
+    context.stroke();
     if (this.styles.fillStyle != "transparent") {
-      canvasContext.context?.fill();
+      context.fill();
     }
   }
 
-  private drawCurve(curve: CurvePrimitive) {
+  private drawCurve(context: CanvasRenderingContext2D, curve: CurvePrimitive) {
     if (!curve.points.length) {
       return;
     }
-    canvasContext.context?.beginPath();
-    canvasContext.context?.moveTo(...curve.points[0]);
+    context.beginPath();
+    context.moveTo(...curve.points[0]);
     for (const point of curve.points) {
-      canvasContext.context?.lineTo(...point);
+      context.lineTo(...point);
     }
-    canvasContext.context?.stroke();
+    context.stroke();
     if (this.styles.fillStyle != "transparent") {
-      canvasContext.context?.fill();
+      context?.fill();
     }
   }
 }

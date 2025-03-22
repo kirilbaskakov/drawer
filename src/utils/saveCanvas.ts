@@ -1,10 +1,10 @@
-import { canvasContext } from "./CanvasContext";
+import CanvasContext from "./CanvasContext";
 
-const saveCanvas = (id: string) => {
+const saveCanvas = (canvasContext: CanvasContext, id: string) => {
   const json = localStorage.getItem("canvases");
   const canvases = json ? JSON.parse(json) : {};
-  canvases[id] = JSON.stringify(canvasContext);
-  localStorage.setItem("canvases", canvases);
+  canvases[id] = canvasContext.toJSON();
+  localStorage.setItem("canvases", JSON.stringify(canvases));
 };
 
 export default saveCanvas;

@@ -1,5 +1,5 @@
 import Rect from "../../types/Rect";
-import CanvasContext, { canvasContext } from "../CanvasContext";
+import CanvasContext from "../CanvasContext";
 import throttle from "../throttle";
 import Tool from "../../types/Tool";
 import Figure from "../Figure";
@@ -70,6 +70,5 @@ class Eraser implements Tool {
     this.cursorFigure = null;
   }
 }
-export const eraser = new Eraser(canvasContext);
 
 export default Eraser;

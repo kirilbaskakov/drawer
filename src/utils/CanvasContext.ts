@@ -12,6 +12,7 @@ import { keyComboListener } from "./KeyComboListener";
 import KEY_BINDINGS from "../constants/hotkeys";
 import updateBoundingRect from "./geometry/updateBoundingRect";
 import addPadding from "./geometry/addPadding";
+import Select from "./tools/Select";
 
 class CanvasContext {
   context: CanvasRenderingContext2D | null = null;
@@ -23,8 +24,10 @@ class CanvasContext {
   scaleFactor = 1;
   definableStyles: Array<keyof CanvasStyles> = [];
   canvasColor: string = "#fff";
+
   private undoStack: CanvasOperation[] = [];
   private redoStack: CanvasOperation[] = [];
+  private lastCursorPosition = [0, 0];
 
   constructor() {
     makeAutoObservable(this);
@@ -36,11 +39,13 @@ class CanvasContext {
     keyComboListener.subscribe(KEY_BINDINGS.ZOOM_OUT, () =>
       this.zoom(this.scaleFactor - 0.1),
     );
+    keyComboListener.subscribe(KEY_BINDINGS.PASTE, () => this.paste());
   }
 
   connectCanvas(canvas: HTMLCanvasElement) {
     this.context = canvas.getContext("2d");
     this.canvas = canvas;
+    this.canvas.style.backgroundColor = this.canvasColor;
     canvas.onmouseup = (e) => {
       if (this.activeTool) {
         const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
@@ -48,8 +53,9 @@ class CanvasContext {
       }
     };
     canvas.onmousemove = (e) => {
+      const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
+      this.lastCursorPosition = [x, y];
       if (this.activeTool) {
-        const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
         this.activeTool.handleMouseMove(x, y);
       }
     };
@@ -199,9 +205,12 @@ class CanvasContext {
   }
 
   repaint() {
-    this.context?.clearRect(-9999, -9999, 20000, 20000);
+    if (!this.context) {
+      return;
+    }
+    this.context.clearRect(-9999, -9999, 20000, 20000);
     this.figures.forEach((figure) => {
-      figure.paint();
+      figure.paint(this.context!);
     });
   }
 
@@ -244,6 +253,76 @@ class CanvasContext {
     this.repaint();
   }
 
+  async paste() {
+    const json = await navigator.clipboard.readText();
+    const obj = JSON.parse(json);
+    if (!obj || !obj.figures) {
+      return;
+    }
+    const figures: Figure[] = [];
+    const boundingRect: Rect = { ...DEFAULT_BOUDING_RECT };
+
+    for (const figure of obj.figures) {
+      const figureParsed = Figure.fromJSON(figure);
+      if (figureParsed) {
+        figures.push(figureParsed);
+        updateBoundingRect(
+          boundingRect,
+          figureParsed.boundingRect.x1,
+          figureParsed.boundingRect.y1,
+        );
+        updateBoundingRect(
+          boundingRect,
+          figureParsed.boundingRect.x2,
+          figureParsed.boundingRect.y2,
+        );
+      }
+    }
+    if (!figures.length) {
+      return;
+    }
+    const w = boundingRect.x2 - boundingRect.x1;
+    const h = boundingRect.y2 - boundingRect.y1;
+    const translateX = this.lastCursorPosition[0] - boundingRect.x1 - w / 2;
+    const translateY = this.lastCursorPosition[1] - boundingRect.y1 - h / 2;
+    figures.forEach((figure) => figure.translate(translateX, translateY));
+    const select = new Select(this);
+    this.setActiveTool(select);
+    select.select(figures);
+    this.addOperation({
+      apply: () => figures.forEach((figure) => this._addFigure(figure)),
+      rollback: () => figures.forEach((figure) => this._deleteFigure(figure)),
+    });
+    figures.forEach((figure) => this._addFigure(figure));
+    this.repaint();
+  }
+
+  toJSON() {
+    const figuresJSON = this.figures.map((figure) => figure.toJSON());
+    return JSON.stringify({
+      figures: figuresJSON,
+      canvasColor: this.canvasColor,
+      styles: this.styles,
+    });
+  }
+
+  static fromJSON(jsonString: string) {
+    const parsedObject = JSON.parse(jsonString);
+    if (
+      parsedObject.figures &&
+      parsedObject.canvasColor &&
+      parsedObject.styles
+    ) {
+      const canvasContext = new CanvasContext();
+      canvasContext.setStyles(parsedObject.styles);
+      canvasContext.figures = parsedObject.figures.map((figure: string) =>
+        Figure.fromJSON(figure),
+      );
+      canvasContext.setCanvasColor(parsedObject.canvasColor);
+      return canvasContext;
+    }
+  }
+
   private _addFigure(figure: Figure) {
     this.figures.push(figure);
   }
@@ -261,7 +340,5 @@ class CanvasContext {
     return [clientX, clientY];
   }
 }
-
-export const canvasContext = new CanvasContext();
 
 export default CanvasContext;
