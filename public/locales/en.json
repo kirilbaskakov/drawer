@@ -25,6 +25,7 @@
     "copy": "Copy",
     "paste": "Paste",
     "cut": "Cut",
-    "home": "Home"
+    "home": "Home",
+    "fontSize": "Text size"
   }
 }

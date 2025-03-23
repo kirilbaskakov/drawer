@@ -36,12 +36,14 @@ class CanvasContext {
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
     this.paste = this.paste.bind(this);
+    this.selectAll = this.selectAll.bind(this);
 
     keyComboListener.subscribe(KEY_BINDINGS.UNDO, this.undo);
     keyComboListener.subscribe(KEY_BINDINGS.REDO, this.redo);
     keyComboListener.subscribe(KEY_BINDINGS.ZOOM_IN, this.zoomIn);
     keyComboListener.subscribe(KEY_BINDINGS.ZOOM_OUT, this.zoomOut);
     keyComboListener.subscribe(KEY_BINDINGS.PASTE, this.paste);
+    keyComboListener.subscribe(KEY_BINDINGS.SELECT_ALL, this.selectAll);
   }
 
   connectCanvas(canvas: HTMLCanvasElement) {
@@ -51,26 +53,26 @@ class CanvasContext {
     canvas.onmouseup = (e) => {
       if (this.activeTool) {
         const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
-        this.activeTool.handleMouseUp(x, y);
+        this.activeTool.handleMouseUp(x, y, e);
       }
     };
     canvas.onmousemove = (e) => {
       const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
       this.lastCursorPosition = [x, y];
       if (this.activeTool) {
-        this.activeTool.handleMouseMove(x, y);
+        this.activeTool.handleMouseMove(x, y, e);
       }
     };
     canvas.onmousedown = (e) => {
       if (this.activeTool) {
         const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
-        this.activeTool.handleMouseDown(x, y);
+        this.activeTool.handleMouseDown(x, y, e);
       }
     };
     canvas.onmouseleave = (e) => {
       if (this.activeTool?.handleMouseLeave) {
         const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
-        this.activeTool.handleMouseLeave(x, y);
+        this.activeTool.handleMouseLeave(x, y, e);
       }
     };
   }
@@ -90,6 +92,7 @@ class CanvasContext {
     keyComboListener.unsubscribe(this.zoomIn);
     keyComboListener.unsubscribe(this.zoomOut);
     keyComboListener.unsubscribe(this.paste);
+    keyComboListener.unsubscribe(this.selectAll);
   }
 
   export() {
@@ -226,6 +229,10 @@ class CanvasContext {
     const select = new Select(this);
     this.setActiveTool(select);
     select.select(figures);
+  }
+
+  selectAll() {
+    this.select(this.figures.filter((figure) => !figure.isAdditional));
   }
 
   repaint() {

@@ -5,6 +5,7 @@ import { FaRegHandPaper, FaPencilAlt } from "react-icons/fa";
 import { PiCursor, PiEraser, PiRectangle, PiCircle } from "react-icons/pi";
 import { TfiLayoutLineSolid } from "react-icons/tfi";
 import { AiOutlinePicture } from "react-icons/ai";
+import { IoTextOutline } from "react-icons/io5";
 import Hand from "../utils/tools/Hand";
 import Select from "../utils/tools/Select";
 import Pencil from "../utils/tools/Pencil";
@@ -15,6 +16,7 @@ import Eraser from "../utils/tools/Eraser";
 import ImageTool from "../utils/tools/ImageTool";
 import useCanvasContext from "../hooks/useCanvasContext";
 import { observer } from "mobx-react-lite";
+import TextTool from "../utils/tools/TextTool";
 
 const menu = [
   {
@@ -40,6 +42,10 @@ const menu = [
   {
     icon: <PiCircle />,
     tool: CircleDrawer,
+  },
+  {
+    icon: <IoTextOutline />,
+    tool: TextTool,
   },
   {
     icon: <AiOutlinePicture />,

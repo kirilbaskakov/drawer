@@ -9,12 +9,14 @@ import CanvasStoreProvider from "../store/CanvasStoreContext";
 const CanvasPage = () => {
   return (
     <CanvasStoreProvider>
-      <Menu />
-      <Canvas />
-      <ToolsMenu />
-      <ToolSettingsPanel />
-      <Zoom />
-      <UndoRedo />
+      <div className="canvas-page">
+        <Menu />
+        <Canvas />
+        <ToolsMenu />
+        <ToolSettingsPanel />
+        <Zoom />
+        <UndoRedo />
+      </div>
     </CanvasStoreProvider>
   );
 };

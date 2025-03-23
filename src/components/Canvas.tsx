@@ -16,11 +16,7 @@ const Canvas = () => {
     }
   };
 
-  return (
-    <div className="canvas-container">
-      <canvas id="canvas" ref={canvasRef} width={width} height={height} />
-    </div>
-  );
+  return <canvas id="canvas" ref={canvasRef} width={width} height={height} />;
 };
 
 export default Canvas;

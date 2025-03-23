@@ -2,6 +2,7 @@ import Picker from "./Picker";
 import "../index.css";
 import {
   FILL_COLORS,
+  FONT_SIZES,
   LINE_DASH,
   LINE_WIDTHS,
   STROKE_COLORS,
@@ -90,6 +91,17 @@ const ToolSettingsPanel = observer(() => {
           }))}
           value={canvasContext.styles.lineDash}
           onSelect={updateOptions("lineDash")}
+        />
+      )}
+      {canvasContext.definableStyles.includes("fontSize") && (
+        <Picker
+          title={t("fontSize")}
+          options={FONT_SIZES.map(([fontSize, label]) => ({
+            icon: <div className="custom-tool-icon">{label}</div>,
+            value: fontSize,
+          }))}
+          value={canvasContext.styles.fontSize}
+          onSelect={updateOptions("fontSize")}
         />
       )}
     </div>

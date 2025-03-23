@@ -4,10 +4,10 @@ interface Tool {
   cursor: string;
   definableStyles: Array<keyof CanvasStyles>;
 
-  handleMouseUp: (x: number, y: number) => void;
-  handleMouseDown: (x: number, y: number) => void;
-  handleMouseMove: (x: number, y: number) => void;
-  handleMouseLeave?: (x: number, y: number) => void;
+  handleMouseUp: (x: number, y: number, e: MouseEvent) => void;
+  handleMouseDown: (x: number, y: number, e: MouseEvent) => void;
+  handleMouseMove: (x: number, y: number, e: MouseEvent) => void;
+  handleMouseLeave?: (x: number, y: number, e: MouseEvent) => void;
 
   reset?: () => void;
   updateStyles?: (styles: Partial<CanvasStyles>) => void;

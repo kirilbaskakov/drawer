@@ -29,11 +29,19 @@ export const CANVAS_COLORS = [
   "#F3E5F5",
 ];
 
+export const FONT_SIZES = [
+  ["14px", "S"],
+  ["18px", "M"],
+  ["22px", "L"],
+];
+
 export const DEFAULT_STYLES: CanvasStyles = {
   strokeStyle: "#000000",
   lineWidth: 4,
   lineDash: [],
   fillStyle: "transparent",
+  fontSize: "14px",
+  fontFamily: "serif",
 };
 
 export const SELECTION_STYLES: Partial<CanvasStyles> = {

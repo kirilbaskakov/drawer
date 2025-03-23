@@ -233,6 +233,7 @@ class Select implements Tool {
         "lineWidth",
         "lineDash",
         "fillStyle",
+        "fontSize",
       ]);
       this.canvasContext.setStyles(this.selectedFigures[0].styles, false);
     } else {
@@ -252,7 +253,9 @@ class Select implements Tool {
     this.selectedFigures.forEach((figure) =>
       this.selectedRects?.addRect(addPadding(figure.boundingRect, 5, 5)),
     );
-    this.selectedRects?.addRect(this.selectedRects.boundingRect);
+    this.selectedRects.addRect(this.selectedRects.boundingRect, {
+      lineDash: [5],
+    });
   }
 
   private updateCursor(point: Point) {

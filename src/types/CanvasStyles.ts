@@ -3,4 +3,6 @@ export interface CanvasStyles {
   lineWidth: number;
   lineDash: number[];
   fillStyle: string;
+  fontSize: string;
+  fontFamily: string;
 }
