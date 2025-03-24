@@ -5,7 +5,6 @@ import {
 import { CanvasStyles } from "../../types/CanvasStyles";
 import Primitive from "../../types/Primitive";
 import Rect from "../../types/Rect";
-import ScaleType from "../../types/ScaleType";
 import applyStyles from "../canvasUtils/applyStyles";
 import createPolygonFromRect from "../geometry/createPolygonFromRect";
 import isRectInside from "../geometry/isRectInside";
@@ -14,6 +13,8 @@ import CurvePrimitive from "./primitives/CurvePrimitive";
 import EllipsePrimitive from "./primitives/EllipsePrimitive";
 import ImagePrimitive from "./primitives/ImagePrimitive";
 import TextPrimitive from "./primitives/TextPrimitive";
+
+type PrimitiveType = "curve" | "ellipse" | "image" | "text";
 
 class Figure {
   id: number;
@@ -38,8 +39,9 @@ class Figure {
     }
   }
 
-  scale(scaleX: number, scaleY: number, scaleType: ScaleType = "nw-resize") {
-    const prevBoundingRect = { ...this.boundingRect };
+  scale(scaleX: number, scaleY: number, basePoint: [number, number]) {
+    const newX = basePoint[0] + (this.boundingRect.x1 - basePoint[0]) * scaleX;
+    const newY = basePoint[1] + (this.boundingRect.y1 - basePoint[1]) * scaleY;
     this.boundingRect.x1 *= scaleX;
     this.boundingRect.x2 *= scaleX;
     this.boundingRect.y1 *= scaleY;
@@ -47,36 +49,7 @@ class Figure {
     for (const primitive of this.primitives) {
       primitive.scale(scaleX, scaleY);
     }
-    switch (scaleType) {
-      case "nw-resize":
-      case "w-resize":
-      case "n-resize":
-        this.translate(
-          prevBoundingRect.x1 - this.boundingRect.x1,
-          prevBoundingRect.y1 - this.boundingRect.y1,
-        );
-        break;
-      case "se-resize":
-      case "s-resize":
-      case "e-resize":
-        this.translate(
-          prevBoundingRect.x2 - this.boundingRect.x2,
-          prevBoundingRect.y2 - this.boundingRect.y2,
-        );
-        break;
-      case "ne-resize":
-        this.translate(
-          prevBoundingRect.x1 - this.boundingRect.x1,
-          prevBoundingRect.y2 - this.boundingRect.y2,
-        );
-        break;
-      case "sw-resize":
-        this.translate(
-          prevBoundingRect.x2 - this.boundingRect.x2,
-          prevBoundingRect.y1 - this.boundingRect.y1,
-        );
-        break;
-    }
+    this.translate(newX - this.boundingRect.x1, newY - this.boundingRect.y1);
   }
 
   addEllipse(rect: Rect) {
@@ -123,7 +96,12 @@ class Figure {
   }
 
   addText(text: string, x: number, y: number) {
-    const primitive = new TextPrimitive(x, y, text);
+    const primitive = new TextPrimitive(
+      x,
+      y,
+      text,
+      this.styles.fontSize + " " + this.styles.fontFamily,
+    );
     this.primitives.push(primitive);
     const boundingRect = primitive.getBoundingRect();
     updateBoundingRect(this.boundingRect, boundingRect.x1, boundingRect.y1);
@@ -155,8 +133,13 @@ class Figure {
   }
 
   toJSON() {
+    const primitivesJSON = this.primitives.map((primitive) => ({
+      type: this.getPrimitiveType(primitive),
+      json: JSON.stringify(primitive),
+    }));
+
     return JSON.stringify({
-      primitives: this.primitives,
+      primitives: primitivesJSON,
       boundingRect: this.boundingRect,
       styles: this.styles,
     });
@@ -169,13 +152,42 @@ class Figure {
       parsedObject.boundingRect &&
       parsedObject.styles
     ) {
-      console.log(parsedObject);
       const figure = new Figure();
-      figure.primitives = parsedObject.primitives as Primitive[];
+      console.log(parsedObject);
+      figure.primitives = parsedObject.primitives.map(
+        ({ type, json }: { type: PrimitiveType; json: string }) => {
+          switch (type) {
+            case "curve":
+              return CurvePrimitive.fromJSON(json);
+            case "ellipse":
+              return EllipsePrimitive.fromJSON(json);
+            case "image":
+              return ImagePrimitive.fromJSON(json);
+            case "text":
+              return TextPrimitive.fromJSON(json);
+          }
+        },
+      );
       figure.boundingRect = parsedObject.boundingRect as Rect;
       figure.setStyles(parsedObject.styles);
       return figure;
     }
+  }
+
+  private getPrimitiveType(primitive: Primitive): PrimitiveType {
+    if (primitive instanceof CurvePrimitive) {
+      return "curve";
+    }
+    if (primitive instanceof EllipsePrimitive) {
+      return "ellipse";
+    }
+    if (primitive instanceof ImagePrimitive) {
+      return "image";
+    }
+    if (primitive instanceof TextPrimitive) {
+      return "text";
+    }
+    return "curve";
   }
 }
 export default Figure;

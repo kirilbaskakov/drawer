@@ -31,6 +31,7 @@ class Select implements Tool {
   private currDy = 0;
   private currScaleX = 1;
   private currScaleY = 1;
+  private basePoint: [number, number] = [0, 0];
 
   constructor(canvasContext: CanvasContext) {
     this.canvasContext = canvasContext;
@@ -73,17 +74,17 @@ class Select implements Tool {
       const currScaleX = this.currScaleX;
       const currScaleY = this.currScaleY;
       const selectedFigures = [...this.selectedFigures];
-      const action = this.currAction;
+      const basePoint = this.basePoint;
       this.currScaleX = 1;
       this.currScaleY = 1;
       this.canvasContext.addOperation({
         apply: () =>
           selectedFigures.forEach((figure) =>
-            figure.scale(currScaleX, currScaleY, this.currAction as ScaleType),
+            figure.scale(currScaleX, currScaleY, basePoint),
           ),
         rollback: () =>
           selectedFigures.forEach((figure) =>
-            figure.scale(1 / currScaleX, 1 / currScaleY, action as ScaleType),
+            figure.scale(1 / currScaleX, 1 / currScaleY, basePoint),
           ),
       });
     }
@@ -113,18 +114,24 @@ class Select implements Tool {
         this.selectedRects.boundingRect.y2 - this.selectedRects.boundingRect.y1;
       let scaleX = 1,
         scaleY = 1;
+      const basePoint: [number, number] = [0, 0];
+      switch (this.currAction) {
+        case "e-resize":
+      }
       if (
         this.currAction == "n-resize" ||
         this.currAction == "nw-resize" ||
         this.currAction == "sw-resize"
       ) {
         scaleY = (h + (y - this.position[1])) / h;
+        basePoint[1] = this.selectedRects.boundingRect.y1;
       } else if (
         this.currAction == "s-resize" ||
         this.currAction == "se-resize" ||
         this.currAction == "ne-resize"
       ) {
         scaleY = (h + (this.position[1] - y)) / h;
+        basePoint[1] = this.selectedRects.boundingRect.y2;
       }
       if (
         this.currAction == "w-resize" ||
@@ -132,19 +139,22 @@ class Select implements Tool {
         this.currAction == "nw-resize"
       ) {
         scaleX = (w + (x - this.position[0])) / w;
+        basePoint[0] = this.selectedRects.boundingRect.x1;
       } else if (
         this.currAction == "e-resize" ||
         this.currAction == "se-resize" ||
         this.currAction == "sw-resize"
       ) {
         scaleX = (w + (this.position[0] - x)) / w;
+        basePoint[0] = this.selectedRects.boundingRect.x2;
       }
       this.selectedFigures.forEach((figure) =>
-        figure.scale(scaleX, scaleY, this.currAction as ScaleType),
+        figure.scale(scaleX, scaleY, basePoint),
       );
       this.position = [x, y];
       this.currScaleX *= scaleX;
       this.currScaleY *= scaleY;
+      this.basePoint = basePoint;
       this.drawSelectedRects();
       return;
     }

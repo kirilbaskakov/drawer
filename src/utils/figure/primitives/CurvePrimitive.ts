@@ -5,6 +5,7 @@ import Rect from "../../../types/Rect";
 import applyStyles from "../../canvasUtils/applyStyles";
 import rectIntersectPolygon from "../../geometry/rectIntersectPolygon";
 import updateBoundingRect from "../../geometry/updateBoundingRect";
+import parseObject from "../../parseObject";
 
 class CurvePrimitive implements Primitive {
   points: Array<[number, number]>;
@@ -60,18 +61,10 @@ class CurvePrimitive implements Primitive {
     return rectIntersectPolygon(rect, this.points);
   }
 
-  toJSON() {
-    return JSON.stringify(this);
-  }
-
-  fromJSON(jsonString: string) {
-    const parsedObject = JSON.parse(jsonString);
-    if (parsedObject.points) {
-      this.points = parsedObject.points as Array<[number, number]>;
-    }
-    if (parsedObject.styles) {
-      this.styles = parsedObject.styles as Partial<CanvasStyles>;
-    }
+  static fromJSON(jsonString: string) {
+    const object = new CurvePrimitive([]);
+    parseObject(jsonString, object, ["points", "styles"]);
+    return object;
   }
 }
 

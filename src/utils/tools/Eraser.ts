@@ -67,6 +67,9 @@ class Eraser implements Tool {
   }
 
   reset() {
+    if (this.cursorFigure) {
+      this.canvasContext.deleteFigure(this.cursorFigure);
+    }
     this.cursorFigure = null;
   }
 }

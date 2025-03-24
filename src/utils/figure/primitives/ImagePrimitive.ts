@@ -2,15 +2,16 @@ import Primitive from "../../../types/Primitive";
 import Rect from "../../../types/Rect";
 import createPolygonFromRect from "../../geometry/createPolygonFromRect";
 import rectIntersectPolygon from "../../geometry/rectIntersectPolygon";
+import parseObject from "../../parseObject";
 
 class ImagePrimitive implements Primitive {
   x: number;
   y: number;
   image: HTMLImageElement | null;
 
-  private src: string;
-  private scaleValue: [number, number] = [1, 1];
-  private translateValue: [number, number] = [0, 0];
+  src: string;
+  scaleValue: [number, number] = [1, 1];
+  translateValue: [number, number] = [0, 0];
 
   constructor(x: number, y: number, image: HTMLImageElement) {
     this.x = x;
@@ -24,8 +25,8 @@ class ImagePrimitive implements Primitive {
       context.save();
       context.scale(this.scaleValue[0], this.scaleValue[1]);
       context.translate(
-        this.translateValue[0] / this.translateValue[0],
-        this.translateValue[1] / this.translateValue[1],
+        this.translateValue[0] / this.scaleValue[0],
+        this.translateValue[1] / this.scaleValue[1],
       );
       context.drawImage(this.image, this.x, this.y);
       context.restore();
@@ -51,11 +52,15 @@ class ImagePrimitive implements Primitive {
   }
 
   getBoundingRect(): Rect {
+    const x = this.x * this.scaleValue[0] + this.translateValue[0];
+    const y = this.y * this.scaleValue[1] + this.translateValue[1];
+    const w = (this.image?.width ?? 0) * this.scaleValue[0];
+    const h = (this.image?.height ?? 0) * this.scaleValue[1];
     return {
-      x1: this.x,
-      y1: this.y,
-      x2: this.x + (this.image?.width ?? 0),
-      y2: this.y + (this.image?.height ?? 0),
+      x1: x,
+      y1: y,
+      x2: x + w,
+      y2: y + h,
     };
   }
 
@@ -66,29 +71,17 @@ class ImagePrimitive implements Primitive {
     );
   }
 
-  toJSON() {
-    return JSON.stringify(this);
-  }
-
-  fromJSON(parsedObject: Record<string, unknown>) {
-    for (const property of [
+  static fromJSON(jsonString: string) {
+    const object = new ImagePrimitive(0, 0, new Image());
+    parseObject(jsonString, object, [
       "x",
       "y",
       "image",
       "src",
       "scaleValue",
       "translateValue",
-    ] as const) {
-      if (parsedObject[property]) {
-        this[property] = parsedObject[property] as any;
-      }
-    }
-    if (parsedObject.center) {
-      this.center = parsedObject.center as [number, number];
-    }
-    if (parsedObject.radius) {
-      this.radius = parsedObject.radius as [number, number];
-    }
+    ]);
+    return object;
   }
 }
 

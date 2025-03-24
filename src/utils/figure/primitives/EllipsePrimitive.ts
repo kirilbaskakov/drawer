@@ -2,6 +2,7 @@ import Primitive from "../../../types/Primitive";
 import Rect from "../../../types/Rect";
 import createPolygonFromRect from "../../geometry/createPolygonFromRect";
 import rectIntersectPolygon from "../../geometry/rectIntersectPolygon";
+import parseObject from "../../parseObject";
 
 class EllipsePrimitive implements Primitive {
   center: [number, number];
@@ -51,17 +52,10 @@ class EllipsePrimitive implements Primitive {
     );
   }
 
-  toJSON() {
-    return JSON.stringify(this);
-  }
-
-  fromJSON(parsedObject: Record<string, unknown>) {
-    if (parsedObject.center) {
-      this.center = parsedObject.center as [number, number];
-    }
-    if (parsedObject.radius) {
-      this.radius = parsedObject.radius as [number, number];
-    }
+  static fromJSON(jsonString: string) {
+    const object = new EllipsePrimitive({ x1: 0, y1: 0, x2: 0, y2: 0 });
+    parseObject(jsonString, object, ["center", "radius"]);
+    return object;
   }
 }
 
