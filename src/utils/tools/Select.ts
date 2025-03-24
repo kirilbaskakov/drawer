@@ -4,7 +4,7 @@ import {
 } from "../../constants/drawingDefaults";
 import Rect from "../../types/Rect";
 import CanvasContext from "../CanvasContext";
-import Figure from "../Figure";
+import Figure from "../figure/Figure";
 import throttle from "../throttle";
 import Tool from "../../types/Tool";
 import isPointInRect from "../geometry/isPointInRect";
@@ -145,8 +145,7 @@ class Select implements Tool {
       this.position = [x, y];
       this.currScaleX *= scaleX;
       this.currScaleY *= scaleY;
-      this.selectedRects.scale(scaleX, scaleY, this.currAction as ScaleType);
-      this.canvasContext.repaint();
+      this.drawSelectedRects();
       return;
     }
     if (!this.selectionRect) {
@@ -256,6 +255,44 @@ class Select implements Tool {
     this.selectedRects.addRect(this.selectedRects.boundingRect, {
       lineDash: [5],
     });
+    const boundingRect = { ...this.selectedRects.boundingRect };
+    this.selectedRects.addRect(
+      {
+        x1: boundingRect.x1 - 5,
+        y1: boundingRect.y1 - 5,
+        x2: boundingRect.x1 + 5,
+        y2: boundingRect.y1 + 5,
+      },
+      { fillStyle: "white" },
+    );
+    this.selectedRects.addRect(
+      {
+        x1: boundingRect.x1 - 5,
+        y1: boundingRect.y2 - 5,
+        x2: boundingRect.x1 + 5,
+        y2: boundingRect.y2 + 5,
+      },
+      { fillStyle: "white" },
+    );
+    this.selectedRects.addRect(
+      {
+        x1: boundingRect.x2 - 5,
+        y1: boundingRect.y2 - 5,
+        x2: boundingRect.x2 + 5,
+        y2: boundingRect.y2 + 5,
+      },
+      { fillStyle: "white" },
+    );
+    this.selectedRects.addRect(
+      {
+        x1: boundingRect.x2 - 5,
+        y1: boundingRect.y1 - 5,
+        x2: boundingRect.x2 + 5,
+        y2: boundingRect.y1 + 5,
+      },
+      { fillStyle: "white" },
+    );
+    this.canvasContext.repaint();
   }
 
   private updateCursor(point: Point) {

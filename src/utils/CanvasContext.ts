@@ -4,7 +4,7 @@ import {
 } from "../constants/drawingDefaults";
 import { CanvasStyles } from "../types/CanvasStyles";
 import Rect from "../types/Rect";
-import Figure from "./Figure";
+import Figure from "./figure/Figure";
 import Tool from "../types/Tool";
 import CanvasOperation from "../types/CanvasOperation";
 import { makeAutoObservable } from "mobx";
@@ -50,13 +50,13 @@ class CanvasContext {
     this.context = canvas.getContext("2d");
     this.canvas = canvas;
     this.canvas.style.backgroundColor = this.canvasColor;
-    canvas.onmouseup = (e) => {
+    document.onmouseup = (e) => {
       if (this.activeTool) {
         const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
         this.activeTool.handleMouseUp(x, y, e);
       }
     };
-    canvas.onmousemove = (e) => {
+    document.onmousemove = (e) => {
       const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
       this.lastCursorPosition = [x, y];
       if (this.activeTool) {
@@ -69,7 +69,7 @@ class CanvasContext {
         this.activeTool.handleMouseDown(x, y, e);
       }
     };
-    canvas.onmouseleave = (e) => {
+    document.onmouseleave = (e) => {
       if (this.activeTool?.handleMouseLeave) {
         const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
         this.activeTool.handleMouseLeave(x, y, e);

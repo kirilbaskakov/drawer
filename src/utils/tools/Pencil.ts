@@ -1,5 +1,5 @@
 import CanvasContext from "../CanvasContext";
-import Figure from "../Figure";
+import Figure from "../figure/Figure";
 import Tool from "../../types/Tool";
 import throttle from "../throttle";
 import { CanvasStyles } from "../../types/CanvasStyles";
@@ -22,9 +22,10 @@ class Pencil implements Tool {
   }
 
   handleMouseUp(x: number, y: number) {
-    this.isDrawing = false;
+    if (!this.isDrawing) return;
     this.currentFigure?.addPoint(x, y);
     this.canvasContext.repaint();
+    this.isDrawing = false;
   }
 
   handleMouseMove(x: number, y: number) {

@@ -2,7 +2,7 @@ import CanvasContext from "../CanvasContext";
 import throttle from "../throttle";
 import Tool from "../../types/Tool";
 import { CanvasStyles } from "../../types/CanvasStyles";
-import Figure from "../Figure";
+import Figure from "../figure/Figure";
 
 class TextTool implements Tool {
   cursor: string = "crosshair";

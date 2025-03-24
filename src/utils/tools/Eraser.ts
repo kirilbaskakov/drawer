@@ -2,7 +2,7 @@ import Rect from "../../types/Rect";
 import CanvasContext from "../CanvasContext";
 import throttle from "../throttle";
 import Tool from "../../types/Tool";
-import Figure from "../Figure";
+import Figure from "../figure/Figure";
 import { CanvasStyles } from "../../types/CanvasStyles";
 
 class Eraser implements Tool {

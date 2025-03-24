@@ -1,13 +1,14 @@
 import {
   DEFAULT_BOUDING_RECT,
   DEFAULT_STYLES,
-} from "../constants/drawingDefaults";
-import { CanvasStyles } from "../types/CanvasStyles";
-import Rect from "../types/Rect";
-import ScaleType from "../types/ScaleType";
-import doRectsIntersect from "./geometry/doRectsIntersect";
-import isRectInside from "./geometry/isRectInside";
-import updateBoundingRect from "./geometry/updateBoundingRect";
+} from "../../constants/drawingDefaults";
+import { CanvasStyles } from "../../types/CanvasStyles";
+import Rect from "../../types/Rect";
+import ScaleType from "../../types/ScaleType";
+import createPolygonFromRect from "../geometry/createPolygonFromRect";
+import isRectInside from "../geometry/isRectInside";
+import rectIntersectPolygon from "../geometry/rectIntersectPolygon";
+import updateBoundingRect from "../geometry/updateBoundingRect";
 
 interface EllipsePrimitive {
   type: "ellipse";
@@ -186,15 +187,7 @@ class Figure {
   }
 
   addRect(rect: Rect, styles?: Partial<CanvasStyles>) {
-    this.addPolygon(
-      [
-        [rect.x1, rect.y1],
-        [rect.x2, rect.y1],
-        [rect.x2, rect.y2],
-        [rect.x1, rect.y2],
-      ],
-      styles,
-    );
+    this.addPolygon(createPolygonFromRect(rect), styles);
   }
 
   addPolygon(points: Array<[number, number]>, styles?: Partial<CanvasStyles>) {
@@ -237,7 +230,32 @@ class Figure {
   }
 
   intersectWith(rect: Rect) {
-    return doRectsIntersect(rect, this.boundingRect);
+    return this.primitives.some((primitive) => {
+      switch (primitive.type) {
+        case "curve":
+          return rectIntersectPolygon(rect, primitive.points);
+        case "ellipse":
+          return rectIntersectPolygon(
+            rect,
+            createPolygonFromRect({
+              x1: primitive.center[0] - primitive.radius[0],
+              y1: primitive.center[1] - primitive.radius[1],
+              x2: primitive.center[0] + primitive.radius[0],
+              y2: primitive.center[0] + primitive.radius[0],
+            }),
+          );
+        case "image": {
+          const x = primitive.x * primitive.scale[0] + primitive.translate[0],
+            y = primitive.y * primitive.scale[1] + primitive.translate[1];
+          const w = (primitive.image?.width ?? 0) * primitive.scale[0],
+            h = (primitive.image?.height ?? 0) * primitive.scale[1];
+          return rectIntersectPolygon(
+            rect,
+            createPolygonFromRect({ x1: x, y1: y, x2: x + w, y2: y + h }),
+          );
+        }
+      }
+    });
   }
 
   containsIn(rect: Rect) {

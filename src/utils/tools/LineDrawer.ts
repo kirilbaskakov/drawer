@@ -1,5 +1,5 @@
 import CanvasContext from "../CanvasContext";
-import Figure from "../Figure";
+import Figure from "../figure/Figure";
 import throttle from "../throttle";
 import Tool from "../../types/Tool";
 import { CanvasStyles } from "../../types/CanvasStyles";
