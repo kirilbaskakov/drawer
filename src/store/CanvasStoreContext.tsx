@@ -1,42 +1,53 @@
-import { ReactNode, createContext, useEffect, useState } from "react";
-import CanvasContext from "../utils/CanvasContext";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import saveCanvas from "../utils/saveCanvas";
-import getCanvas from "../utils/getCanvas";
+
+import CanvasContext from "../utils/CanvasContext";
+import getCanvas from "../utils/storage/getCanvas";
+import saveCanvas from "../utils/storage/saveCanvas";
 
 type CanvasStoreContextType = {
   canvasContext: CanvasContext;
+  canvasName: string;
+  setCanvasName: (canvasName: string) => void;
 };
 
 export const CanvasStoreContext = createContext({} as CanvasStoreContextType);
 
 const CanvasStoreProvider = ({ children }: { children: ReactNode }) => {
   const params = useParams();
+  const [canvasName, setCanvasName] = useState("New Document");
   const [canvasContext, setCanvasContext] = useState<CanvasContext | null>(
     null,
   );
 
   useEffect(() => {
     const id = params.id;
-    let intervalId = null;
     let canvas: CanvasContext | null = null;
     if (id) {
-      canvas = getCanvas(id) ?? new CanvasContext();
-      intervalId = setInterval(() => {
-        if (canvas && id) {
-          saveCanvas(canvas, id);
-        }
-      }, 5000);
+      const { name, canvasContext } = getCanvas(id);
+      canvas = canvasContext ?? new CanvasContext();
       setCanvasContext(canvas);
+      setCanvasName(name ?? "New Document");
     }
 
+    return () => {
+      canvas?.delete();
+    };
+  }, [params.id]);
+
+  useEffect(() => {
+    let intervalId = null;
+    intervalId = setInterval(() => {
+      if (canvasContext && params.id) {
+        saveCanvas(canvasContext, params.id, canvasName);
+      }
+    }, 2000);
     return () => {
       if (intervalId) {
         clearInterval(intervalId);
       }
-      canvas?.delete();
     };
-  }, [params.id]);
+  }, [canvasContext, params.id, canvasName]);
 
   if (!canvasContext) {
     return null;
@@ -44,6 +55,8 @@ const CanvasStoreProvider = ({ children }: { children: ReactNode }) => {
 
   const canvasStore: CanvasStoreContextType = {
     canvasContext,
+    canvasName,
+    setCanvasName,
   };
 
   return (

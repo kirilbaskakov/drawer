@@ -1,15 +1,16 @@
-import Picker from "./Picker";
-import "../index.css";
+import { observer } from "mobx-react-lite";
+import { useTranslation } from "react-i18next";
+
 import {
   FILL_COLORS,
   FONT_SIZES,
   LINE_DASH,
   LINE_WIDTHS,
   STROKE_COLORS,
-} from "../constants/drawingDefaults";
-import { observer } from "mobx-react-lite";
-import { useTranslation } from "react-i18next";
-import useCanvasContext from "../hooks/useCanvasContext";
+} from "@/constants/drawingDefaults";
+import useCanvasContext from "@/hooks/useCanvasContext";
+
+import Picker from "../Picker/Picker";
 
 const ToolSettingsPanel = observer(() => {
   const { t } = useTranslation();

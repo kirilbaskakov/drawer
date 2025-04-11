@@ -1,14 +1,16 @@
-import Header from "../components/Header";
-import Hero from "../components/Hero";
-import Works from "../components/Works";
+import Header from "@/components/Header/Header";
+import Hero from "@/components/Hero/Hero";
+import Works from "@/components/Works/Works";
 
 const MainPage = () => {
   return (
     <>
       <div className="main-page">
         <Header />
-        <Hero />
-        <Works />
+        <div className="main-page-content">
+          <Hero />
+          <Works />
+        </div>
       </div>
     </>
   );

@@ -1,10 +1,10 @@
-import Canvas from "../components/Canvas";
-import ToolSettingsPanel from "../components/ToolSettingsPanel";
-import Zoom from "../components/Zoom";
-import UndoRedo from "../components/UndoRedo";
-import Menu from "../components/Menu";
-import ToolsMenu from "../components/ToolsMenu";
-import CanvasStoreProvider from "../store/CanvasStoreContext";
+import Canvas from "@/components/Canvas/Canvas";
+import Menu from "@/components/Menu/Menu";
+import ToolSettingsPanel from "@/components/ToolSettingsPanel/ToolSettingsPanel";
+import ToolsMenu from "@/components/ToolsMenu/ToolsMenu";
+import UndoRedo from "@/components/UndoRedo/UndoRedo";
+import Zoom from "@/components/Zoom/Zoom";
+import CanvasStoreProvider from "@/store/CanvasStoreContext";
 
 const CanvasPage = () => {
   return (

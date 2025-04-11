@@ -1,17 +1,19 @@
+import { makeAutoObservable } from "mobx";
+
 import {
   DEFAULT_BOUDING_RECT,
   DEFAULT_STYLES,
-} from "../constants/drawingDefaults";
-import { CanvasStyles } from "../types/CanvasStyles";
-import Rect from "../types/Rect";
+} from "@/constants/drawingDefaults";
+import KEY_BINDINGS from "@/constants/hotkeys";
+import CanvasOperation from "@/types/CanvasOperation";
+import { CanvasStyles } from "@/types/CanvasStyles";
+import Rect from "@/types/Rect";
+import Tool from "@/types/Tool";
+
 import Figure from "./figure/Figure";
-import Tool from "../types/Tool";
-import CanvasOperation from "../types/CanvasOperation";
-import { makeAutoObservable } from "mobx";
-import { keyComboListener } from "./KeyComboListener";
-import KEY_BINDINGS from "../constants/hotkeys";
-import updateBoundingRect from "./geometry/updateBoundingRect";
 import addPadding from "./geometry/addPadding";
+import updateBoundingRect from "./geometry/updateBoundingRect";
+import { keyComboListener } from "./KeyComboListener";
 import Select from "./tools/Select";
 
 class CanvasContext {
@@ -50,31 +52,10 @@ class CanvasContext {
     this.context = canvas.getContext("2d");
     this.canvas = canvas;
     this.canvas.style.backgroundColor = this.canvasColor;
-    document.onmouseup = (e) => {
-      if (this.activeTool) {
-        const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
-        this.activeTool.handleMouseUp(x, y, e);
-      }
-    };
-    document.onmousemove = (e) => {
-      const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
-      this.lastCursorPosition = [x, y];
-      if (this.activeTool) {
-        this.activeTool.handleMouseMove(x, y, e);
-      }
-    };
-    canvas.onmousedown = (e) => {
-      if (this.activeTool) {
-        const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
-        this.activeTool.handleMouseDown(x, y, e);
-      }
-    };
-    document.onmouseleave = (e) => {
-      if (this.activeTool?.handleMouseLeave) {
-        const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
-        this.activeTool.handleMouseLeave(x, y, e);
-      }
-    };
+    document.onmouseup = this.handleMouseUp;
+    document.onmousemove = this.handleMouseMove;
+    canvas.onmousedown = this.handleMouseDown;
+    document.onmouseleave = this.handleMouseLeave;
   }
 
   clear() {
@@ -87,6 +68,9 @@ class CanvasContext {
   }
 
   delete() {
+    if (this.activeTool?.reset) {
+      this.activeTool.reset();
+    }
     keyComboListener.unsubscribe(this.undo);
     keyComboListener.unsubscribe(this.redo);
     keyComboListener.unsubscribe(this.zoomIn);
@@ -96,10 +80,6 @@ class CanvasContext {
   }
 
   export() {
-    if (!this.canvas || !this.context) {
-      return "";
-    }
-
     let boundingRect = { ...DEFAULT_BOUDING_RECT };
     this.figures.forEach((figure) => {
       if (figure.isAdditional) {
@@ -110,20 +90,18 @@ class CanvasContext {
       updateBoundingRect(boundingRect, x2, y2);
     });
     boundingRect = addPadding(boundingRect, 10, 10);
-    const zoom = this.scaleFactor;
-    const offset = [...this.offset];
-    this.zoom(1);
-    this.translate(-this.offset[0], -this.offset[1]);
-    const zoomX = this.canvas.clientWidth / (boundingRect.x2 - boundingRect.x1);
-    const zoomY =
-      this.canvas.clientHeight / (boundingRect.y2 - boundingRect.y1);
-    this.zoom(Math.min(zoomX, zoomY));
-    this.translate(-boundingRect.x1, -boundingRect.y1);
-    const data = this.canvas.toDataURL("image/png");
-    this.translate(boundingRect.x1, boundingRect.y1);
-    this.zoom(1);
-    this.zoom(zoom);
-    this.translate(offset[0], offset[1]);
+    const canvas = document.createElement("canvas");
+    canvas.width = boundingRect.x2 - boundingRect.x1;
+    canvas.height = boundingRect.y2 - boundingRect.y1;
+    canvas.style.display = "none";
+    document.body.appendChild(canvas);
+    const prevContext = this.context;
+    this.context = canvas.getContext("2d");
+    this.context?.translate(-boundingRect.x1, -boundingRect.y1);
+    this.repaint();
+    const data = canvas.toDataURL("image/png");
+    document.body.removeChild(canvas);
+    this.context = prevContext;
     return data;
   }
 
@@ -393,6 +371,35 @@ class CanvasContext {
     clientY /= this.scaleFactor;
     return [clientX, clientY];
   }
+
+  private handleMouseUp = (e: MouseEvent) => {
+    if (this.activeTool) {
+      const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
+      this.activeTool.handleMouseUp(x, y, e);
+    }
+  };
+
+  private handleMouseMove = (e: MouseEvent) => {
+    const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
+    this.lastCursorPosition = [x, y];
+    if (this.activeTool) {
+      this.activeTool.handleMouseMove(x, y, e);
+    }
+  };
+
+  private handleMouseDown = (e: MouseEvent) => {
+    if (this.activeTool) {
+      const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
+      this.activeTool.handleMouseDown(x, y, e);
+    }
+  };
+
+  private handleMouseLeave = (e: MouseEvent) => {
+    if (this.activeTool?.handleMouseLeave) {
+      const [x, y] = this.translateClientPoint(e.pageX, e.pageY);
+      this.activeTool.handleMouseLeave(x, y, e);
+    }
+  };
 }
 
 export default CanvasContext;

@@ -34,6 +34,7 @@ class KeyComboListener {
   }
 
   private checkCombinations(): void {
+    console.log(this.combinations);
     let longestCombo: (() => void) | null = null,
       comboLength = 0;
     for (const { combo, callback } of this.combinations) {
@@ -53,6 +54,11 @@ class KeyComboListener {
     this.combinations = this.combinations.filter(
       ({ callback: cb }) => callback != cb,
     );
+  }
+
+  public delete() {
+    window.removeEventListener("keydown", this.handleKeyDown);
+    window.removeEventListener("keyup", this.handleKeyUp);
   }
 }
 

@@ -1,11 +1,14 @@
+import "./index.css";
+
 import {
-  Route,
-  RouterProvider,
   createBrowserRouter,
   createRoutesFromChildren,
+  Route,
+  RouterProvider,
 } from "react-router-dom";
-import MainPage from "./pages/MainPage";
+
 import CanvasPage from "./pages/CanvasPage";
+import MainPage from "./pages/MainPage";
 import { ConfirmationModalContextProvider } from "./store/ConfirmationModalContext";
 
 const router = createBrowserRouter(

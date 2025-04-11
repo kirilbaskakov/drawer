@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import useWindowSize from "../hooks/useWindowSize";
-import useCanvasContext from "../hooks/useCanvasContext";
+
+import useCanvasContext from "@/hooks/useCanvasContext";
+import useWindowSize from "@/hooks/useWindowSize";
 
 const Canvas = () => {
   const { width, height } = useWindowSize();
@@ -8,7 +9,7 @@ const Canvas = () => {
 
   useEffect(() => {
     canvasContext.repaint();
-  }, [width, height]);
+  }, [canvasContext, width, height]);
 
   const canvasRef = (canvas: HTMLCanvasElement) => {
     if (canvas) {

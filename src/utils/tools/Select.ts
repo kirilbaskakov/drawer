@@ -2,18 +2,18 @@ import {
   SELECTED_STYLES,
   SELECTION_STYLES,
 } from "../../constants/drawingDefaults";
+import KEY_BINDINGS from "../../constants/hotkeys";
+import { CanvasStyles } from "../../types/CanvasStyles";
+import Point from "../../types/Point";
 import Rect from "../../types/Rect";
+import ScaleType from "../../types/ScaleType";
+import Tool from "../../types/Tool";
 import CanvasContext from "../CanvasContext";
 import Figure from "../figure/Figure";
-import throttle from "../throttle";
-import Tool from "../../types/Tool";
-import isPointInRect from "../geometry/isPointInRect";
-import { CanvasStyles } from "../../types/CanvasStyles";
 import addPadding from "../geometry/addPadding";
-import KEY_BINDINGS from "../../constants/hotkeys";
+import isPointInRect from "../geometry/isPointInRect";
 import { keyComboListener } from "../KeyComboListener";
-import Point from "../../types/Point";
-import ScaleType from "../../types/ScaleType";
+import throttle from "../throttle";
 
 type ActionType = null | "selecting" | "move" | ScaleType;
 
@@ -35,7 +35,7 @@ class Select implements Tool {
 
   constructor(canvasContext: CanvasContext) {
     this.canvasContext = canvasContext;
-    this.handleMouseMove = throttle(this.handleMouseMove, 50);
+    this.handleMouseMove = throttle(this.handleMouseMove, 30);
 
     this.delete = this.delete.bind(this);
     this.copy = this.copy.bind(this);

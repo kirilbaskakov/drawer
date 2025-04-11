@@ -1,0 +1,24 @@
+.hotkeysList {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  font-size: 14px;
+}
+
+.hotkeySequence {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.hotkey {
+  padding: 0.25rem 0.5rem;
+  background-color: rgba(180, 92, 250, 0.3);
+  border-radius: 8px;
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: semibold;
+  text-align: center;
+}

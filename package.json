@@ -14,6 +14,7 @@
     "prepare": "git config core.hooksPath .git-hooks && chmod +x .git-hooks/pre-commit"
   },
   "dependencies": {
+    "@types/node": "^22.14.0",
     "i18next": "^24.2.3",
     "mobx": "^6.13.6",
     "mobx-react-lite": "^4.1.0",
@@ -32,6 +33,7 @@
     "eslint-config-prettier": "^10.0.2",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^15.15.0",
     "prettier": "^3.5.2",
     "typescript": "~5.7.2",

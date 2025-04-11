@@ -1,5 +1,7 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { createPortal } from "react-dom";
+
+import styles from "./Modal.module.css";
 
 const Modal = ({
   children,
@@ -10,8 +12,8 @@ const Modal = ({
 }) => {
   return createPortal(
     <>
-      <div className="modal">{children}</div>
-      <div className="modal-background" onClick={onClose} />
+      <div className={styles.modal}>{children}</div>
+      <div className={styles.modalBackground} onClick={onClose} />
     </>,
     document.body,
   );

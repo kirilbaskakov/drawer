@@ -1,9 +1,9 @@
-import Rect from "../../types/Rect";
-import CanvasContext from "../CanvasContext";
-import throttle from "../throttle";
-import Tool from "../../types/Tool";
-import Figure from "../figure/Figure";
 import { CanvasStyles } from "../../types/CanvasStyles";
+import Rect from "../../types/Rect";
+import Tool from "../../types/Tool";
+import CanvasContext from "../CanvasContext";
+import Figure from "../figure/Figure";
+import throttle from "../throttle";
 
 class Eraser implements Tool {
   cursor: string = "none";

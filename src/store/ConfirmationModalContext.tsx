@@ -1,6 +1,7 @@
-import { ReactNode, createContext, useRef, useState } from "react";
-import Modal from "../components/Modal";
+import { createContext, ReactNode, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+
+import Modal from "../components/Modal/Modal";
 
 type ModalContextType = {
   showModal: (title: string, text: string) => Promise<boolean>;

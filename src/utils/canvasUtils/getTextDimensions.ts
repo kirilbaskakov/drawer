@@ -5,7 +5,6 @@ function getTextDimensions(text: string, font: string) {
   const metrics = context!.measureText(text);
   const width = metrics.width;
   const height = parseInt(font, 10);
-  console.log(width);
   return { width, height };
 }
 

@@ -1,8 +1,8 @@
+import { CanvasStyles } from "../../types/CanvasStyles";
+import Tool from "../../types/Tool";
 import CanvasContext from "../CanvasContext";
 import Figure from "../figure/Figure";
 import throttle from "../throttle";
-import Tool from "../../types/Tool";
-import { CanvasStyles } from "../../types/CanvasStyles";
 
 class ImageTool implements Tool {
   cursor: string = "crosshair";
@@ -12,7 +12,7 @@ class ImageTool implements Tool {
 
   constructor(canvasContext: CanvasContext) {
     this.canvasContext = canvasContext;
-    this.handleMouseMove = throttle(this.handleMouseMove, 50);
+    this.handleMouseMove = throttle(this.handleMouseMove, 30);
   }
 
   handleMouseUp() {}

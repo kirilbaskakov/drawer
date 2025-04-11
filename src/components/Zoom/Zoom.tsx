@@ -1,5 +1,8 @@
 import { observer } from "mobx-react-lite";
-import useCanvasContext from "../hooks/useCanvasContext";
+
+import useCanvasContext from "@/hooks/useCanvasContext";
+
+import styles from "./Zoom.module.css";
 
 const Zoom = observer(() => {
   const { canvasContext } = useCanvasContext();
@@ -13,13 +16,13 @@ const Zoom = observer(() => {
 
   return (
     <div className="toolbar toolbar-bottom-right">
-      <button className="zoom-button" onClick={updateZoom(-0.1)}>
+      <button className={styles.zoomButton} onClick={updateZoom(-0.1)}>
         -
       </button>
-      <p className="zoom-value">
+      <p className={styles.zoomValue}>
         {Math.round(canvasContext.scaleFactor * 100)}%
       </p>
-      <button className="zoom-button" onClick={updateZoom(0.1)}>
+      <button className={styles.zoomButton} onClick={updateZoom(0.1)}>
         +
       </button>
     </div>

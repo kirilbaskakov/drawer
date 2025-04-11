@@ -5,7 +5,7 @@ import Rect from "../../../types/Rect";
 import applyStyles from "../../canvasUtils/applyStyles";
 import rectIntersectPolygon from "../../geometry/rectIntersectPolygon";
 import updateBoundingRect from "../../geometry/updateBoundingRect";
-import parseObject from "../../parseObject";
+import parseObject from "../../storage/parseObject";
 
 class CurvePrimitive implements Primitive {
   points: Array<[number, number]>;

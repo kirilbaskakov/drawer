@@ -153,7 +153,6 @@ class Figure {
       parsedObject.styles
     ) {
       const figure = new Figure();
-      console.log(parsedObject);
       figure.primitives = parsedObject.primitives.map(
         ({ type, json }: { type: PrimitiveType; json: string }) => {
           switch (type) {

@@ -1,4 +1,5 @@
 import { useContext } from "react";
+
 import { ConfirmationModalContext } from "../store/ConfirmationModalContext";
 
 const useConfirm = () => {

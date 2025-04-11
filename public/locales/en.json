@@ -26,6 +26,16 @@
     "paste": "Paste",
     "cut": "Cut",
     "home": "Home",
-    "fontSize": "Text size"
+    "fontSize": "Text size",
+    "heroTitle": "Create your piece of art!",
+    "create": "Create",
+    "yourWorks": "Your works",
+    "noWorks": "No works were found",
+    "search": "Search...",
+    "deleteCanvasConfirmTitle": "Are you sure you want to delete this canvas?",
+    "deleteCanvasConfirmText": "You won't be able to restore it.",
+    "openInNewTab": "Open in new tab",
+    "byDate": "By date",
+    "byName": "By name"
   }
 }

@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { KEY_BINDINGS_INFO, KEY_NAMES } from "../constants/hotkeys";
-import Modal from "./Modal";
 import { useTranslation } from "react-i18next";
+
+import { KEY_BINDINGS_INFO, KEY_NAMES } from "@/constants/hotkeys";
+
+import Modal from "../Modal/Modal";
+import styles from "./HotKeys.module.css";
 
 const HotKeysButton = () => {
   const { t } = useTranslation();
@@ -21,16 +24,16 @@ const HotKeysButton = () => {
       </button>
       {isOpen && (
         <Modal onClose={onClose}>
-          <h1 className="modal-title">{t("hotkeys")}</h1>
-          <div className="hotkeys-list">
+          <h1 className={styles.modalTitle}>{t("hotkeys")}</h1>
+          <div className={styles.hotkeysList}>
             {KEY_BINDINGS_INFO.map(({ nameKey, keys }) => (
               <>
-                <div className="hotkey-name">{t(nameKey)}</div>
+                <div>{t(nameKey)}</div>
                 <div>
                   {keys.map((combo) => (
-                    <div className="hotkey-sequence">
+                    <div className={styles.hotkeySequence}>
                       {combo.map((key) => (
-                        <div className="hotkey">
+                        <div className={styles.hotkey}>
                           {KEY_NAMES[key as keyof typeof KEY_NAMES] ?? ""}
                         </div>
                       ))}

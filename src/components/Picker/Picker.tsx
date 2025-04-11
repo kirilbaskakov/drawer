@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
-import ToolButton from "./ToolButton";
+
+import ToolButton from "../ToolButton/ToolButton";
+import styles from "./Picker.module.css";
 
 type Options<T> = Array<{ icon: ReactNode; value: T }>;
 
@@ -19,8 +21,8 @@ const Picker = <T,>({
   };
   return (
     <div>
-      <h3 className="picker-title">{title}</h3>
-      <div className="picker-items">
+      <h3 className={styles.pickerTitle}>{title}</h3>
+      <div className={styles.pickerItems}>
         {options.map(({ icon, value: val }) => (
           <ToolButton
             icon={icon}

@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 
+import styles from "./ToolButton.module.css";
+
 const ToolButton = ({
   icon,
   onClick,
@@ -13,7 +15,7 @@ const ToolButton = ({
 }) => {
   return (
     <button
-      className={"tool-button " + (isActive ? "active" : "")}
+      className={styles.toolButton + " " + (isActive ? styles.active : "")}
       title={tooltip}
       onClick={onClick}
     >

@@ -2,7 +2,7 @@ import Primitive from "../../../types/Primitive";
 import Rect from "../../../types/Rect";
 import createPolygonFromRect from "../../geometry/createPolygonFromRect";
 import rectIntersectPolygon from "../../geometry/rectIntersectPolygon";
-import parseObject from "../../parseObject";
+import parseObject from "../../storage/parseObject";
 
 class EllipsePrimitive implements Primitive {
   center: [number, number];

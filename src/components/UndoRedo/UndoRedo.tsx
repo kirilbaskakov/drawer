@@ -1,6 +1,9 @@
-import { GrUndo, GrRedo } from "react-icons/gr";
 import { observer } from "mobx-react-lite";
-import useCanvasContext from "../hooks/useCanvasContext";
+import { GrRedo,GrUndo } from "react-icons/gr";
+
+import useCanvasContext from "@/hooks/useCanvasContext";
+
+import styles from "./UndoRedo.module.css";
 
 const UndoRedo = observer(() => {
   const { canvasContext } = useCanvasContext();
@@ -16,14 +19,14 @@ const UndoRedo = observer(() => {
   return (
     <div className="toolbar toolbar-bottom-left">
       <button
-        className="undo-redo-button"
+        className={styles.undoRedoButton}
         onClick={onUndoClick}
         disabled={!canvasContext.canUndo}
       >
         <GrUndo />
       </button>
       <button
-        className="undo-redo-button"
+        className={styles.undoRedoButton}
         onClick={onRedoClick}
         disabled={!canvasContext.canRedo}
       >

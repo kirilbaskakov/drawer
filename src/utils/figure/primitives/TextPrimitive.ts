@@ -4,7 +4,7 @@ import Rect from "../../../types/Rect";
 import getTextDimensions from "../../canvasUtils/getTextDimensions";
 import createPolygonFromRect from "../../geometry/createPolygonFromRect";
 import rectIntersectPolygon from "../../geometry/rectIntersectPolygon";
-import parseObject from "../../parseObject";
+import parseObject from "../../storage/parseObject";
 
 class TextPrimitive implements Primitive {
   x: number;

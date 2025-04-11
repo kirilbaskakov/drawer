@@ -15,17 +15,6 @@
   cursor: crosshair;
 }
 
-header {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 2rem 0; 
-}
-
-.logo {
-  margin-right: auto;
-}
-
 .toolbar {
   display: flex;
   gap: 0.5rem;
@@ -61,64 +50,6 @@ header {
   bottom: 15px;
 }
 
-.tool-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 30px;
-  height: 30px;
-  background-color: #f5f5f5;
-  cursor: pointer;
-  border: none;
-  border-radius: 5px;
-  border: 1px solid #e1e1e1;
-}
-
-.menu-button {
-  position: absolute;
-  left: 15px;
-  top: 15px;
-}
-
-.burger {
-  box-shadow: 0px 0px 8px 3px rgba(180, 92, 250, 0.3);
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 40px;
-  width: 40px;
-  padding: 14px;
-  cursor: pointer;
-  border: none;
-  border-radius: 8px;
-}
-
-.burger > .line {
-  width: 100%;
-  height: 1.5px;
-  border-radius: 1px;
-  background-color: black;
-}
-
-.menu {
-  box-shadow: 0px 0px 8px 3px rgba(180, 92, 250, 0.3);
-  z-index: 10;
-  position: relative;
-  top: 8px;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  background-color: #fff;
-  padding: 0.5rem 0.75rem;
-  width: 250px;
-}
-
-.menu-section {
-  border-top: 1px solid #eee;
-  margin-top: 0.25rem;
-  padding: 0.4rem 0;
-}
-
 .menu-option {
   cursor: pointer;
   width: 100%;
@@ -133,56 +64,8 @@ header {
   background-color: #eee;
 }
 
-.document-title {
-  width: 100%;
-  background-color: transparent;
-  border: none;
-  font-size: 18px;
-  padding: 0.4rem;
-  border-radius: 8px;
-}
-
-.document-title:hover {
-  outline: 1px solid #aaa;
-}
-
 label {
   font-size: 14px;
-}
-
-.language-select {
-  display: block;
-  width: 100%;
-  border-radius: 8px;
-  padding: 0.25rem;
-  margin: 0.3rem 0;
-  background-color: white;
-  min-width: 120px;
-}
-
-.tool-button > * {
-  width: 12px;
-  height: 12px;
-}
-
-.tool-button:hover {
-  background-color: rgba(180, 92, 250, 0.3);
-}
-
-.tool-button.active {
-  background-color: rgba(180, 92, 250, 0.6);
-  border-color: rgba(180, 92, 250, 1);
-}
-
-.picker-title {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.picker-items {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
 }
 
 .custom-tool-icon {
@@ -200,80 +83,6 @@ label {
   width: 90%;
   border-radius: 5px;
   border: 2px solid black;
-}
-
-.zoom-value {
-  margin: auto;
-  vertical-align: middle;
-  text-align: center;
-  width: 60px;
-}
-
-.zoom-button {
-  cursor: pointer;
-  border: none;
-  background-color: transparent;
-  width: 30px;
-  height: 30px;
-  font-size: 24px;
-}
-
-.undo-redo-button {
-  cursor: pointer;
-  padding: 0.5rem;
-  background-color: #efefef;
-  border: none;
-}
-
-.undo-redo-button:disabled {
-  color: #aaa;
-}
-
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 1rem;
-  border-radius: 8px;
-  z-index: 11;
-  background-color: #fff;
-  box-shadow: 0 0 15px 3px #b5b5b5;
-}
-
-.modal-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.1);
-  z-index: 10;
-}
-
-.modal-title {
-  font-size: 20px;
-  font-weight: semibold;
-  text-align: center;
-}
-
-.hotkeys-list {
-  margin-top: 1.5rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  font-size: 14px;
-}
-
-.hotkey-sequence {
-  display: flex;
-  gap: 0.25rem;
-}
-
-.hotkey {
-  padding: 0.25rem 0.5rem;
-  background-color: rgba(180, 92, 250, 0.3);
-  border-radius: 8px;
 }
 
 .confirmation-title {
@@ -320,192 +129,12 @@ label {
     background-color: rgba(180, 92, 250, 0.8);
 }
 
-.hero {
-  margin-top: 1rem;
-  position: relative;
-  height: 650px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 5rem 0;
-}
-
-.video-container {
-  z-index: -1;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 0.5;
-}
-
-.hero-video {
-  object-fit: fill;
-  width: 100%;
-  height: 100%;
-} 
-
-.hero-title {
-  font-size: 56px;
-  color: black;
-  text-shadow: 0 0 15px #c5c5c5;
-  color: #812bd6;
-}
-
-.hero-button {
-  cursor: pointer;
-  margin-top: 3rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 24px;
-  padding: 1rem 2.5rem;
-  background-color: rgba(180, 92, 250);
-  color: white;
-  font-weight: bold;
-}
-
-.hero-button:hover {
-  background-color: rgba(166, 56, 255);
-}
-
 .main-page {
+  background-color: rgba(243, 224, 255, 0.2);
+}
+
+.main-page-content {
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.works {
-  margin-top: 3rem;
-}
-
-.works-title {
-  font-size: 32px;
-}
-
-.search-works {
-  margin-top: 1rem;
-  width: 100%;
-  padding: 0.4rem;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  border-radius: 8px;
-}
-
-.works-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.sort-button {
-  width: 35px;
-  height: 35px;
-  padding: 0.4rem;
-  border-radius: 50%;
-}
-
-.sort-button:hover {
-  background-color: #eee;
-}
-
-.theme-button {
-  cursor: pointer;
-  position: relative;
-  width: 65px;
-  height: 28px;
-  border: 1px solid #888;
-  border-radius: 25px;
-  background-color: #b5b5b5;
-}
-
-.theme-circle {
-  width: 27px;
-  height: 27px;
-  border-radius: 50%;
-  position: absolute;
-  top: 0;
-  border: 1px solid #888;
-  background-color: #e5e5e5;
-}
-
-.theme-circle.light {
-  left: 0;
-}
-
-.theme-circle.dark {
-  right: 0;
-}
-
-.theme-icon {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-}
-
-.theme-icon.sun {
-  right: 5px;
-  color: #f0ec02;
-}
-
-.theme-icon.moon {
-  left: 5px;
-  color: #f0ec02;
-}
-
-.work-cards {
-  padding: 1.5rem 0;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
-}
-
-.work-card {
-  cursor: pointer;
-  border:1px solid #ccc;
-  overflow: hidden;
-  border-radius: 12px;
-}
-
-.work-card:hover{
-  border: 1px solid rgba(180, 92, 250);
-}
-.work-card-info {
-  border-top: 1px solid #ccc;
-  padding: 0.75rem;
-}
-
-.work-card-title {
-  font-size: 18px;
-  color: #414519;
-}
-
-.work-card-date {
-  margin-top: 0.4rem;
-  font-size: 14px;
-  color: #80868B;
-}
-
-.back-button {
-  cursor: pointer;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
-  padding: 0.75rem;
-  box-shadow: 0px 0px 8px 3px rgba(180, 92, 250, 0.3);
-  font-size: 14px;
-  color: #414519;
-  user-select: none;
-}
-
-.back-button:hover {
-  background-color: #f8f8f8;
-}
-
-.menu-buttons {
-  display: flex;
-  gap: 1rem;
-}

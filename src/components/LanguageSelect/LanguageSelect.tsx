@@ -1,6 +1,9 @@
-import { useTranslation } from "react-i18next";
-import languages from "../constants/languages";
 import { ChangeEventHandler } from "react";
+import { useTranslation } from "react-i18next";
+
+import languages from "@/constants/languages";
+
+import styles from "./LanguageSelect.module.css";
 
 const LanguageSelect = () => {
   const { i18n } = useTranslation();
@@ -12,7 +15,7 @@ const LanguageSelect = () => {
   return (
     <>
       <select
-        className="language-select"
+        className={styles.languageSelect}
         onChange={onSelect}
         value={i18n.language}
       >
