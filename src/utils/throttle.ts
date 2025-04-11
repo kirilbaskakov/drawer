@@ -1,6 +1,6 @@
 function throttle(func: Function, limit: number) {
   let lastCall = 0;
-  let timer: number | null = null;
+  let timer: NodeJS.Timeout | null = null;
   return function (this: unknown, ...args: unknown[]) {
     if (!lastCall) {
       func.apply(this, args);
