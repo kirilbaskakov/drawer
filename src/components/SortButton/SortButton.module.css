@@ -1,0 +1,49 @@
+.sortButton {
+  width: 35px;
+  height: 35px;
+  padding: 0.4rem;
+  border-radius: 50%;
+}
+
+.sortButton:hover {
+  background-color: #eee;
+}
+
+.sortButtonContainer {
+  position: relative;
+}
+
+.sortButtonList {
+  min-width: 140px;
+  position: absolute;
+  background-color: #fff;
+  box-shadow: 0px 0px 8px 3px rgba(180, 92, 250, 0.3);
+  border-radius: 8px;
+  transform: translateX(calc(30px - 100%));
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+.sortButtonOption {
+  cursor: pointer;
+  text-align: center;
+  padding: 0.5rem;
+  position: relative;
+}
+
+.selected::before {
+  position: absolute;
+  content: "✓";
+  left: 10px;
+}
+
+.sortButtonOption:hover {
+  background-color: #eee;
+}
+
+@keyframes fadeIn {
+  to {
+      opacity: 1;
+  }
+}
+

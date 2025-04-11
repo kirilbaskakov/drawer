@@ -1,0 +1,10 @@
+.undoRedoButton {
+  cursor: pointer;
+  padding: 0.5rem;
+  background-color: #efefef;
+  border: none;
+}
+
+.undoRedoButton:disabled {
+  color: #aaa;
+}
